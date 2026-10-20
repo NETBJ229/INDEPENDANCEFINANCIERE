@@ -524,22 +524,36 @@
       // Le compte propriétaire est validé automatiquement par son adresse dédiée.
       // Les règles Firestore doivent autoriser uniquement cette adresse à faire cette mise à jour.
       if (isAdministrator(user)) {
-        await setDoc(doc(db, "users", user.uid), {
-          uid: user.uid,
-          displayName: user.displayName || "Administrateur",
-          email: user.email,
+        // Afficher immédiatement l'espace administrateur : l'accès à l'interface
+        // ne dépend pas du délai de réponse de Firestore et aucun paiement n'est demandé.
+        showDashboard(user, {
+          displayName: "Administrateur",
           role: "admin",
           status: "active",
           membership: "active",
           membershipFeeAmount: 0,
-          membershipFeeCurrency: "XOF",
-          membershipPaymentStatus: "admin_approved",
-          updatedAt: serverTimestamp()
-        }, { merge: true });
-        const adminSnap = await getDoc(doc(db, "users", user.uid));
-        showDashboard(user, adminSnap.exists() ? adminSnap.data() : {
-          displayName: "Administrateur", role: "admin", status: "active", membership: "active"
+          membershipPaymentStatus: "admin_approved"
         });
+        try {
+          // La sécurité réelle reste assurée par les règles Firestore côté serveur.
+          await setDoc(doc(db, "users", user.uid), {
+            uid: user.uid,
+            displayName: user.displayName || "Administrateur",
+            email: user.email,
+            role: "admin",
+            status: "active",
+            membership: "active",
+            membershipFeeAmount: 0,
+            membershipFeeCurrency: "XOF",
+            membershipPaymentStatus: "admin_approved",
+            updatedAt: serverTimestamp()
+          }, { merge: true });
+          const adminSnap = await getDoc(doc(db, "users", user.uid));
+          if (adminSnap.exists()) showDashboard(user, adminSnap.data());
+        } catch (adminProfileError) {
+          console.error("Profil administrateur non synchronisé avec Firestore", adminProfileError);
+          $("referralMsg").textContent = "Accès administrateur reconnu dans l'interface, mais Firestore a refusé la synchronisation du profil. Vérifiez les règles Firestore. Les fonctions d'administration nécessitant Firestore peuvent rester indisponibles.";
+        }
         return;
       }
       const snap = await getDoc(doc(db, "users", user.uid));
