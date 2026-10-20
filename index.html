@@ -332,15 +332,15 @@
   } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
   import { getAnalytics, isSupported } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-analytics.js";
 
-  // Configuration fournie pour le projet Firebase independancefinancieres.
+  // Configuration de l'application Web Firebase fournie par l'utilisateur.
+  // L'API key est une valeur de configuration publique; elle doit correspondre au projet Firebase.
   const firebaseConfig = {
-    apiKey: "AIzaSyAazRWhszcfCKh18MF6jb3cY7tj6LgdyCc",
-    authDomain: "independancefinancieres.firebaseapp.com",
-    projectId: "independancefinancieres",
-    storageBucket: "independancefinancieres.firebasestorage.app",
-    messagingSenderId: "271275987725",
-    appId: "1:271275987725:web:bb5ff6dea7ff79bd13d644",
-    measurementId: "G-JM77GFFQM1"
+    apiKey: "AIzaSyDoolg4MYGpuRQBRfhrEygnqQmZdQdAnuo",
+    authDomain: "independance-financieres.firebaseapp.com",
+    projectId: "independance-financieres",
+    storageBucket: "independance-financieres.firebasestorage.app",
+    messagingSenderId: "491654353955",
+    appId: "1:491654353955:web:5be963f29ea37e0cb24d96"
   };
 
   const app = initializeApp(firebaseConfig);
@@ -391,10 +391,13 @@
       "auth/wrong-password":"E-mail ou mot de passe incorrect.",
       "auth/too-many-requests":"Trop de tentatives. Réessayez plus tard.",
       "auth/network-request-failed":"Connexion réseau impossible. Vérifiez votre connexion Internet.",
-      "permission-denied":"Firebase refuse l'accès à Firestore. Vérifiez les règles de sécurité.",
+      "auth/api-key-not-valid-please-pass-a-valid-api-key":"La clé API Firebase configurée dans index.html est refusée. Ouvrez Firebase Console > Paramètres du projet > Général > Vos applications > application Web, recopiez la clé API actuelle dans firebaseConfig.apiKey, puis vérifiez dans Google Cloud Console que la clé n'est pas supprimée et que ses restrictions autorisent Firebase Authentication (identitytoolkit.googleapis.com). Ce problème ne se corrige pas avec les règles Firestore.",
+      "auth/operation-not-allowed":"La connexion par e-mail/mot de passe n'est pas activée. Dans Firebase Console > Authentication > Méthode de connexion, activez E-mail/Mot de passe.",
+      "auth/invalid-api-key":"La clé API Firebase est absente ou invalide. Recopiez la clé API de l'application Web depuis les paramètres du projet Firebase.",
+      "permission-denied":"Firebase refuse l'accès à Firestore. Vérifiez les règles de sécurité Firestore.",
       "unavailable":"Le service est temporairement indisponible. Réessayez."
     };
-    return messages[code] || ("Une erreur est survenue (" + (code || "inconnue") + "). Vérifiez la configuration Firebase et les règles Firestore.");
+    return messages[code] || ("Une erreur est survenue (" + (code || "inconnue") + "). Consultez la console du navigateur pour le code exact. Les erreurs de clé API se corrigent dans les paramètres Firebase/Google Cloud, pas dans les règles Firestore.");
   }
 
   $("authForm").addEventListener("submit", async e => {
