@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102b24">
+  <meta name="description" content="INDÉPENDANCE FINANCIÈRE — formations professionnelles, apprentissage et affiliation directe.">
+  <title>INDÉPENDANCE FINANCIÈRE</title>
+  <style>
+    :root {
+      --bg:#f4f7f5; --surface:#fff; --ink:#172a24; --muted:#66766f;
+      --green:#146c43; --green2:#0d4b32; --lime:#d7f36b; --line:#e0e9e3;
+      --gold:#f2b84b; --danger:#b42318; --shadow:0 14px 40px rgba(18,54,39,.08);
+      --radius:20px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg);line-height:1.55}
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    a{color:inherit}
+    .wrap{width:min(1160px,calc(100% - 32px));margin:auto}
+    header{background:rgba(255,255,255,.94);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;backdrop-filter:blur(12px)}
+    .nav{min-height:74px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:-.4px;text-decoration:none}
+    .brand-mark{width:42px;height:42px;display:grid;place-items:center;border-radius:14px;background:var(--green);color:var(--lime);font-weight:950;font-size:20px}
+    .brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:1.5px}
+    .nav-links{display:flex;align-items:center;gap:20px}
+    .nav-links a{text-decoration:none;color:var(--muted);font-size:14px;font-weight:650}
+    .nav-links a:hover{color:var(--green)}
+    .btn{border:0;border-radius:12px;padding:12px 17px;font-weight:800;transition:.18s;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}
+    .btn:hover{transform:translateY(-1px)}
+    .btn-primary{background:var(--green);color:white}
+    .btn-primary:hover{background:var(--green2)}
+    .btn-dark{background:#102b24;color:white}
+    .btn-light{background:#eef5ef;color:var(--green)}
+    .btn-outline{border:1px solid var(--line);background:white;color:var(--ink)}
+    .btn-sm{padding:9px 12px;font-size:13px}
+    .hero{padding:66px 0 54px;background:radial-gradient(circle at 82% 10%,#dff1b0 0,transparent 26%),linear-gradient(130deg,#f8fbf8,#eaf4ed)}
+    .hero-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:48px;align-items:center}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid #d7e5d9;background:#fff;padding:7px 12px;border-radius:999px;font-size:12px;font-weight:850;color:var(--green);letter-spacing:.4px}
+    h1{font-size:clamp(38px,5.2vw,66px);line-height:1.04;letter-spacing:-2.8px;margin:20px 0}
+    h1 span{color:var(--green)}
+    .lead{font-size:18px;color:var(--muted);max-width:610px}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0}
+    .trust-row{display:flex;gap:22px;flex-wrap:wrap;color:var(--muted);font-size:13px;font-weight:700}
+    .trust-row span:before{content:"✓";color:var(--green);font-weight:950;margin-right:7px}
+    .hero-card{background:var(--green2);color:white;padding:28px;border-radius:28px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+    .hero-card:after{content:"";position:absolute;width:220px;height:220px;border:1px solid rgba(215,243,107,.28);border-radius:50%;right:-80px;top:-80px;box-shadow:0 0 0 25px rgba(215,243,107,.05),0 0 0 55px rgba(215,243,107,.04)}
+    .hero-card>*{position:relative;z-index:1}
+    .hero-card h2{font-size:26px;line-height:1.15;margin:10px 0}
+    .hero-card p{color:#d2e2d8}
+    .mini-label{font-size:11px;font-weight:900;letter-spacing:1.3px;color:var(--lime)}
+    .progress{height:8px;background:#315c49;border-radius:99px;overflow:hidden;margin:20px 0 9px}
+    .progress span{display:block;height:100%;width:72%;background:var(--lime);border-radius:99px}
+    .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
+    .stat{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);padding:14px;border-radius:15px}
+    .stat strong{display:block;font-size:21px}.stat small{color:#c7d9ce;font-size:11px}
+    section{padding:66px 0}
+    .section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:28px}
+    .section-head h2{font-size:clamp(28px,3.5vw,40px);line-height:1.1;letter-spacing:-1.2px;margin:8px 0}
+    .section-head p{margin:0;color:var(--muted);max-width:560px}
+    .kicker{color:var(--green);font-size:12px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase}
+    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .feature,.course,.plan,.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:0 4px 20px rgba(18,54,39,.025)}
+    .feature-icon{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:#edf7ed;font-size:23px;margin-bottom:18px}
+    .feature h3,.course h3,.plan h3{margin:0 0 8px;font-size:19px}
+    .feature p,.course p,.plan p{margin:0;color:var(--muted);font-size:14px}
+    .course-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .course-art{height:138px;border-radius:15px;margin-bottom:18px;padding:17px;display:flex;align-items:end;color:#fff;font-size:22px;font-weight:900;letter-spacing:-.5px;background:linear-gradient(135deg,#164d37,#6a9a53)}
+    .course:nth-child(2) .course-art{background:linear-gradient(135deg,#4b3b82,#b48bd4)}
+    .course:nth-child(3) .course-art{background:linear-gradient(135deg,#8a4e20,#e6b451)}
+    .course-meta{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:16px 0;font-size:12px;color:var(--muted)}
+    .tag{background:#edf6ee;color:var(--green);font-size:11px;font-weight:850;padding:5px 9px;border-radius:999px}
+    .plans{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;max-width:880px;margin:auto}
+    .plan{padding:30px}
+    .plan.featured{background:var(--green2);color:white;border-color:var(--green2);position:relative}
+    .plan.featured p,.plan.featured li{color:#d2e2d8}
+    .plan-price{font-size:35px;font-weight:950;letter-spacing:-1px;margin:15px 0 3px}
+    .plan-price small{font-size:13px;font-weight:600;letter-spacing:0;color:var(--muted)}
+    .plan.featured .plan-price small{color:#d2e2d8}
+    .plan ul{padding-left:19px;color:var(--muted);font-size:14px;min-height:125px}
+    .plan li{margin:8px 0}
+    .featured-badge{display:inline-block;background:var(--lime);color:var(--green2);border-radius:999px;padding:5px 9px;font-size:10px;font-weight:950;letter-spacing:.8px}
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;counter-reset:steps}
+    .step{padding:23px;border-top:3px solid var(--green);background:white;border-radius:0 0 16px 16px}
+    .step:before{counter-increment:steps;content:"0" counter(steps);display:block;color:var(--green);font-weight:950;font-size:14px;margin-bottom:13px}
+    .step h3{margin:0 0 8px}.step p{color:var(--muted);font-size:14px;margin:0}
+    .cta{background:var(--lime);border-radius:28px;padding:38px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+    .cta h2{font-size:clamp(26px,3.5vw,38px);letter-spacing:-1px;line-height:1.1;margin:0 0 10px}
+    .cta p{margin:0;color:#44553b}
+    footer{background:#102b24;color:white;padding:35px 0}
+    .footer-row{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+    footer p,footer a{font-size:12px;color:#c7d9ce}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(7,25,17,.65);z-index:50;display:none;align-items:center;justify-content:center;padding:18px;overflow:auto}
+    .modal-backdrop.open{display:flex}
+    .modal{background:white;width:min(480px,100%);border-radius:22px;padding:26px;position:relative;max-height:94vh;overflow:auto}
+    .modal h2{margin:0 0 5px;font-size:26px}
+    .modal .sub{margin:0 0 20px;color:var(--muted);font-size:14px}
+    .close{position:absolute;right:16px;top:14px;border:0;background:#f0f4f1;border-radius:50%;width:35px;height:35px;font-size:20px}
+    .field{display:grid;gap:6px;margin:13px 0}
+    .field label{font-size:12px;font-weight:850;color:#40554a}
+    .field input,.field select,.field textarea{width:100%;border:1px solid #d7e2da;border-radius:11px;padding:12px;background:white;outline:none}
+    .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px #146c4315}
+    .form-error{color:var(--danger);font-size:13px;min-height:18px}
+    .form-note{font-size:12px;color:var(--muted)}
+    .switch-auth{font-size:13px;text-align:center;color:var(--muted);margin-top:16px}
+    .text-btn{border:0;background:none;color:var(--green);font-weight:850}
+    .dashboard{display:none;padding:30px 0 65px}
+    .dashboard.active{display:block}
+    .dash-head{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+    .dash-grid{display:grid;grid-template-columns:240px 1fr;gap:18px}
+    .side-nav{display:grid;gap:8px;align-content:start}
+    .side-nav button{text-align:left;padding:12px;border:1px solid transparent;background:transparent;border-radius:11px;color:var(--muted);font-weight:750}
+    .side-nav button.active,.side-nav button:hover{background:#eaf4ec;color:var(--green)}
+    .dash-content{min-width:0}
+    .dash-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+    .dash-stat{background:#f5f9f5;border:1px solid var(--line);padding:17px;border-radius:15px}
+    .dash-stat span{display:block;color:var(--muted);font-size:12px}.dash-stat strong{font-size:23px}
+    .dash-section{display:none}.dash-section.active{display:block}
+    .empty{border:1px dashed #c9d8cd;border-radius:15px;padding:22px;color:var(--muted);font-size:14px;text-align:center}
+    .referral-url{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+    .referral-url input{flex:1;min-width:160px;border:1px solid var(--line);border-radius:10px;padding:11px;background:#f8faf8}
+    .notice{background:#fff8e6;border:1px solid #f0dfa9;color:#68531a;padding:12px 14px;border-radius:12px;font-size:13px;margin:15px 0}
+    .hidden{display:none!important}
+    @media(max-width:850px){.hero-grid{grid-template-columns:1fr;gap:30px}.hero{padding-top:42px}.features,.course-grid{grid-template-columns:repeat(2,1fr)}.nav-links{gap:10px}.nav-links a:not(.btn){display:none}.dash-grid{grid-template-columns:1fr}.side-nav{display:flex;overflow:auto}.side-nav button{white-space:nowrap}.dash-cards{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:560px){.wrap{width:min(100% - 24px,1160px)}.nav{min-height:65px}.brand{font-size:12px}.brand-mark{width:37px;height:37px}.nav .btn{padding:9px 11px;font-size:12px}.hero{padding:34px 0 40px}h1{letter-spacing:-1.7px;font-size:42px}.lead{font-size:16px}.hero-card{padding:22px}.stat-grid{grid-template-columns:repeat(3,1fr)}.stat{padding:10px}.stat strong{font-size:17px}section{padding:45px 0}.section-head{display:block}.section-head .btn{margin-top:15px}.features,.course-grid,.plans,.steps{grid-template-columns:1fr}.feature,.course,.plan{padding:20px}.plan ul{min-height:0}.cta{padding:25px;display:block}.cta .btn{margin-top:18px;width:100%}.dash-cards{grid-template-columns:1fr}.modal{padding:23px 19px}.footer-row{display:block}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+<header id="siteHeader">
+  <div class="wrap nav">
+    <a class="brand" href="#" aria-label="Accueil">
+      <span class="brand-mark">IF</span>
+      <span>INDÉPENDANCE<small>FINANCIÈRE</small></span>
+    </a>
+    <nav class="nav-links" aria-label="Navigation principale">
+      <a href="#formations">Formations</a>
+      <a href="#offres">Nos offres</a>
+      <button class="btn btn-outline btn-sm" id="loginOpen">Connexion</button>
+      <button class="btn btn-primary btn-sm" id="registerOpen">Créer un compte</button>
+    </nav>
+  </div>
+</header>
+
+<main id="publicPage">
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow">✦ APPRENDRE • PRATIQUER • PROGRESSER</div>
+        <h1>Vos compétences.<br><span>Votre avenir.</span></h1>
+        <p class="lead">Créez votre profil gratuitement, puis activez-le en réglant les frais d'adhésion de 2 000 FCFA. Accédez ensuite à des formations professionnelles en ligne et en présentiel.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" id="heroRegister">Commencer gratuitement <span>→</span></button>
+          <a class="btn btn-outline" href="#formations">Découvrir les formations</a>
+        </div>
+        <div class="trust-row"><span>Accès membre</span><span>Formations pratiques</span><span>Affiliation directe</span></div>
+      </div>
+      <div class="hero-card">
+        <div class="mini-label">VOTRE PARCOURS COMMENCE ICI</div>
+        <h2>Transformez votre motivation en compétences.</h2>
+        <p>Apprenez, suivez votre progression et retrouvez vos ressources dans un seul espace.</p>
+        <div class="progress"><span></span></div>
+        <small style="color:#d2e2d8">Un parcours organisé autour de vos objectifs</small>
+        <div class="stat-grid">
+          <div class="stat"><strong>En ligne</strong><small>Apprenez partout</small></div>
+          <div class="stat"><strong>Pratique</strong><small>Cas concrets</small></div>
+          <div class="stat"><strong>Direct</strong><small>Un seul niveau</small></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <div><div class="kicker">Pourquoi nous rejoindre</div><h2>Une plateforme pour avancer concrètement.</h2></div>
+        <p>Un espace pensé pour apprendre des compétences, organiser son parcours et accéder à des opportunités sans promesse de gains garantis.</p>
+      </div>
+      <div class="features">
+        <article class="feature"><div class="feature-icon">🎓</div><h3>Formations professionnelles</h3><p>Des contenus structurés, des ressources et des activités pour développer des compétences applicables.</p></article>
+        <article class="feature"><div class="feature-icon">📱</div><h3>En ligne et en présentiel</h3><p>Accédez aux contenus en ligne et consultez les prochaines séances en présentiel lorsqu'elles sont disponibles.</p></article>
+        <article class="feature"><div class="feature-icon">🤝</div><h3>Affiliation sur 3 niveaux</h3><p>Partagez votre lien personnel et suivez votre réseau. Les commissions prévues sont de 1 000 FCFA au niveau 1, 500 FCFA au niveau 2 et 250 FCFA au niveau 3, après validation de l’adhésion admissible.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="formations" style="background:#edf4ef">
+    <div class="wrap">
+      <div class="section-head">
+        <div><div class="kicker">Apprendre avec un objectif</div><h2>Explorez nos domaines de formation.</h2></div>
+        <p>Les cartes ci-dessous présentent des catégories de départ. Les cours réels, prix, contenus et formateurs doivent être ajoutés dans l'administration.</p>
+      </div>
+      <div class="course-grid">
+        <article class="course"><div class="course-art">Marketing digital</div><h3>Développer sa présence en ligne</h3><p>Découvrir les bases du contenu, des réseaux sociaux et de la communication numérique.</p><div class="course-meta"><span>En ligne</span><span class="tag">Débutant</span></div><button class="btn btn-light btn-sm course-action" data-course="Marketing digital">Découvrir</button></article>
+        <article class="course"><div class="course-art">Compétences numériques</div><h3>Outils numériques professionnels</h3><p>Organiser son travail et se familiariser avec les outils numériques utiles à l'activité professionnelle.</p><div class="course-meta"><span>En ligne</span><span class="tag">Pratique</span></div><button class="btn btn-light btn-sm course-action" data-course="Compétences numériques">Découvrir</button></article>
+        <article class="course"><div class="course-art">Entrepreneuriat</div><h3>Structurer une activité</h3><p>Explorer les notions de base pour clarifier une offre, comprendre ses clients et planifier ses actions.</p><div class="course-meta"><span>En ligne / présentiel</span><span class="tag">Projet</span></div><button class="btn btn-light btn-sm course-action" data-course="Entrepreneuriat">Découvrir</button></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="offres">
+    <div class="wrap">
+      <div class="section-head">
+        <div><div class="kicker">Adhésion à la plateforme</div><h2>Créez gratuitement votre profil.</h2></div>
+        <p>L'inscription ne coûte rien. Pour activer le compte et accéder aux fonctions réservées aux membres actifs, les frais d'adhésion sont de 2 000 FCFA.</p>
+      </div>
+      <div class="plans">
+        <article class="plan"><span class="tag">ÉTAPE 1</span><h3>Création du profil</h3><div class="plan-price">0 FCFA</div><p>Créez votre compte gratuitement en quelques minutes.</p><ul><li>Inscription gratuite</li><li>Connexion à votre espace personnel</li><li>Profil en attente d'activation</li><li>Aucun paiement prélevé à cette étape</li></ul><button class="btn btn-outline" style="width:100%" id="freePlan">Créer mon profil gratuitement</button></article>
+        <article class="plan featured"><span class="featured-badge">ÉTAPE 2</span><h3 style="margin-top:13px">Activation du compte</h3><div class="plan-price">2 000 FCFA <small>/ frais d'adhésion</small></div><p>Payez les frais d'adhésion pour activer votre profil.</p><ul><li>Paiement via FedaPay après intégration</li><li>Confirmation du paiement côté serveur</li><li>Activation seulement après paiement confirmé</li><li>Accès aux fonctions réservées aux membres actifs</li></ul><button class="btn" style="width:100%;background:var(--lime);color:var(--green2)" id="premiumPlan">Créer mon profil et payer plus tard</button></article>
+      </div>
+      <p class="form-note" style="text-align:center;margin-top:16px">La création du profil est gratuite, mais le compte reste en attente tant que les 2 000 FCFA n'ont pas été payés et confirmés. Les frais d'adhésion sont distincts d'éventuels prix de formation.</p>
+    </div>
+  </section>
+
+  <section style="background:#edf4ef">
+    <div class="wrap">
+      <div class="section-head"><div><div class="kicker">En trois étapes</div><h2>Votre parcours, simplement.</h2></div></div>
+      <div class="steps">
+        <article class="step"><h3>Créez votre espace</h3><p>Inscrivez-vous avec une adresse e-mail valide et sécurisez votre compte.</p></article>
+        <article class="step"><h3>Choisissez une formation</h3><p>Consultez les objectifs, le contenu, le format et les conditions avant de vous inscrire.</p></article>
+        <article class="step"><h3>Apprenez et progressez</h3><p>Retrouvez vos cours et suivez votre progression dans l'espace membre.</p></article>
+      </div>
+    </div>
+  </section>
+
+  
+<section id="documents-legaux" style="background:#edf4ef;padding:56px 0"><div class="wrap"><div class="section-head"><div><div class="kicker">INFORMATIONS JURIDIQUES</div><h2>Conditions et confidentialité</h2></div><p>Consultez les règles de fonctionnement et la manière dont vos données sont utilisées.</p></div><div class="features"><article class="feature"><div class="feature-icon">📄</div><h3>Conditions générales d’utilisation</h3><p>Les règles d’inscription, d’accès au compte, d’affiliation, de paiement, de responsabilité et de gestion des litiges.</p><a class="btn btn-outline" href="#cgu">Lire les CGU</a></article><article class="feature"><div class="feature-icon">🔐</div><h3>Politique de confidentialité</h3><p>Les données traitées, leurs finalités, leur protection, leur conservation et les moyens de demander une correction ou suppression.</p><a class="btn btn-outline" href="#confidentialite">Lire la politique</a></article></div></div></section>
+<section id="cgu"><div class="wrap"><div class="panel"><div class="kicker">DOCUMENT OFFICIEL</div><h2>Conditions générales d’utilisation — INDÉPENDANCE FINANCIÈRE</h2><p><strong>Dernière mise à jour : 20 octobre 2026</strong></p><h3>1. Objet et acceptation</h3><p>Les présentes conditions encadrent l’utilisation de la plateforme INDÉPENDANCE FINANCIÈRE. En créant un compte ou en utilisant les services, l’utilisateur reconnaît avoir pris connaissance de ces conditions. S’il ne les accepte pas, il doit cesser d’utiliser les services.</p><h3>2. Inscription et sécurité</h3><p>L’utilisateur doit fournir des informations exactes, protéger ses identifiants et signaler tout accès non autorisé. Un compte est personnel. L’inscription est gratuite, mais l’activation des fonctions réservées aux membres actifs est prévue après paiement confirmé des frais d’adhésion de 2 000 FCFA, sauf exception validée par l’administration.</p><h3>3. Formations et services</h3><p>Les formations, contenus, prix, calendriers et modalités ne sont disponibles que lorsqu’ils sont explicitement publiés sur la plateforme. Une présentation indicative ne constitue pas une promesse de disponibilité. Les achats de formation, paiements en ligne et certificats ne doivent pas être considérés comme actifs tant qu’ils ne sont pas proposés dans l’interface officielle.</p><h3>4. Programme d’affiliation</h3><p>Le programme prévoit, sous réserve de validation d’une adhésion admissible et des contrôles applicables, des commissions indicatives de 1 000 FCFA au niveau 1, 500 FCFA au niveau 2 et 250 FCFA au niveau 3. Aucun bonus hebdomadaire lié à 15 filleuls directs n’est prévu. Une inscription, un lien partagé ou un paiement non confirmé ne garantit pas de commission. Les commissions ne sont acquises que lorsque la plateforme les a validées et enregistrées. Les taux et conditions applicables à une opération doivent être consultables avant sa validation et ne doivent pas être modifiés rétroactivement pour les opérations déjà confirmées.</p><h3>5. Paiements, remboursements et retraits</h3><p>Les frais d’adhésion annoncés sont de 2 000 FCFA. Le paiement en ligne et la validation automatique ne sont effectifs que si un prestataire et une confirmation sécurisée côté serveur sont effectivement intégrés. Aucun retrait ou versement de commission ne doit être considéré comme disponible sans procédure officielle publiée. Les modalités de remboursement, lorsqu’elles s’appliquent, seront communiquées avant paiement et restent soumises aux lois applicables.</p><h3>6. Usages interdits</h3><p>Il est interdit de falsifier des informations, créer des comptes frauduleux, usurper une identité, contourner les contrôles, perturber le service ou tenter d’accéder aux données d’autrui. La plateforme peut examiner les activités suspectes et suspendre temporairement un compte dans la mesure permise par la loi, avec examen des faits.</p><h3>7. Disponibilité et responsabilité</h3><p>La plateforme est fournie sous réserve de disponibilité. Des interruptions peuvent survenir pour maintenance, sécurité ou raisons techniques. Les informations de formation et d’affiliation ne constituent pas une garantie d’emploi, de revenu ou de réussite financière. Chaque utilisateur reste responsable de ses décisions.</p><h3>8. Données personnelles</h3><p>Le traitement des données est décrit dans la <a href="#confidentialite">Politique de confidentialité</a>, qui fait partie des documents d’information de la plateforme.</p><h3>9. Modifications et litiges</h3><p>Les conditions peuvent être mises à jour pour refléter les évolutions du service ou du droit. La version en vigueur doit être affichée sur la plateforme. En cas de difficulté, l’utilisateur est invité à contacter l’équipe par le canal officiel communiqué sur le site et à rechercher une solution amiable, sans préjudice de ses droits légaux.</p><p class="form-note">Ce texte est une base de publication et doit être vérifié et complété avec les coordonnées juridiques et de contact réelles de l’exploitant avant lancement commercial.</p></div></div></section>
+<section id="confidentialite" style="background:#edf4ef"><div class="wrap"><div class="panel"><div class="kicker">DOCUMENT OFFICIEL</div><h2>Politique de confidentialité — INDÉPENDANCE FINANCIÈRE</h2><p><strong>Dernière mise à jour : 20 octobre 2026</strong></p><h3>1. Responsable et contact</h3><p>La plateforme INDÉPENDANCE FINANCIÈRE gère les données nécessaires à la création des comptes et à la fourniture de ses services. Les coordonnées du responsable du traitement et le canal de contact doivent être complétés et publiés par l’exploitant avant le lancement.</p><h3>2. Données susceptibles d’être traitées</h3><p>Selon les fonctionnalités utilisées, les données peuvent inclure le nom, l’adresse e-mail, l’identifiant du compte, le code de parrainage, le statut d’adhésion, les informations relatives aux paiements et aux commissions validées, ainsi que les messages envoyés au support. Les données de paiement complètes doivent être traitées par le prestataire de paiement concerné et ne doivent pas être stockées inutilement dans le site.</p><h3>3. Finalités</h3><p>Les données servent à créer et sécuriser les comptes, gérer les accès, vérifier l’adhésion, administrer les formations et le programme d’affiliation, prévenir la fraude, assurer le support, conserver une trace des opérations et respecter les obligations légales applicables.</p><h3>4. Base et minimisation</h3><p>Les données sont traitées dans la mesure nécessaire à la fourniture du service, à l’exécution des demandes de l’utilisateur, à la sécurité et au respect des obligations légales. La plateforme doit limiter la collecte aux données utiles et ne pas demander de données sensibles sans nécessité et base légale appropriée.</p><h3>5. Prestataires et transferts</h3><p>Firebase/Google peut être utilisé pour l’authentification, la base de données et l’hébergement technique. Un prestataire de paiement peut intervenir si le paiement en ligne est activé. Ces fournisseurs peuvent traiter certaines données pour fournir leurs services, conformément à leurs propres documents et aux paramètres de sécurité configurés. Tout transfert international doit respecter les exigences légales applicables.</p><h3>6. Conservation et sécurité</h3><p>Les données sont conservées uniquement pendant la durée nécessaire aux finalités annoncées et aux obligations légales applicables. Des règles d’accès, des contrôles de permissions et des mesures de sécurité doivent protéger les données. Aucun système ne peut garantir une sécurité absolue ; tout incident doit être traité conformément au droit applicable.</p><h3>7. Partage et confidentialité</h3><p>Les données personnelles ne sont pas destinées à être vendues. Elles ne sont accessibles qu’aux personnes autorisées et aux prestataires nécessaires, ou communiquées lorsque la loi l’exige. Les données de profil d’autres membres ne doivent pas être exposées publiquement sans nécessité.</p><h3>8. Droits des utilisateurs</h3><p>Sous réserve du droit applicable, les utilisateurs peuvent demander l’accès à leurs données, leur rectification, leur suppression, la limitation du traitement ou s’opposer à certains traitements. Les demandes doivent être adressées au contact officiel de la plateforme, qui doit être ajouté avant le lancement. Certaines informations peuvent devoir être conservées pour des obligations légales ou la preuve des transactions.</p><h3>9. Cookies et traceurs</h3><p>La plateforme peut utiliser des éléments techniques nécessaires à son fonctionnement et, si activés, des outils de mesure d’audience. Les traceurs non essentiels doivent être configurés et présentés conformément aux règles applicables.</p><h3>10. Mineurs et changements</h3><p>Le service n’est pas destiné aux personnes qui ne peuvent légalement conclure les engagements concernés. La politique peut être mise à jour ; la date de dernière mise à jour sera affichée ici.</p><p class="form-note">Avant publication définitive, complétez l’identité du responsable, ses coordonnées, les durées de conservation et les modalités concrètes d’exercice des droits selon la législation applicable au pays d’exploitation.</p></div></div></section>
+
+<section><div class="wrap"><div class="cta"><div><h2>Prêt à faire le premier pas ?</h2><p>Créez votre compte et préparez votre parcours de formation.</p></div><button class="btn btn-dark" id="ctaRegister">Créer mon compte →</button></div></div></section>
+</main>
+
+<main class="dashboard" id="dashboard">
+  <div class="wrap">
+    <div class="dash-head"><div><div class="kicker">ESPACE PERSONNEL</div><h1 style="font-size:34px;letter-spacing:-1px;margin:5px 0">Bonjour, <span id="memberName">membre</span></h1><p style="margin:0;color:var(--muted)">Bienvenue dans votre espace INDÉPENDANCE FINANCIÈRE. Votre profil est créé gratuitement.</p></div><button class="btn btn-outline" id="logoutBtn">Déconnexion</button></div>
+    <div class="dash-grid">
+      <aside class="panel side-nav" aria-label="Menu membre">
+        <button class="active" data-tab="overview">🏠 Vue d'ensemble</button>
+        <button data-tab="mycourses">🎓 Mes formations</button>
+        <button data-tab="referral">🤝 Mon affiliation</button>
+        <button data-tab="account">👤 Mon compte</button>
+        <button data-tab="admin" id="adminNav" class="hidden">🛡️ Administration</button>
+      </aside>
+      <div class="dash-content">
+        <section class="dash-section active" id="tab-overview" style="padding:0">
+          <div class="dash-cards">
+            <div class="dash-stat"><span>Statut du compte</span><strong id="memberStatus" style="font-size:18px">En attente</strong></div>
+            <div class="dash-stat"><span>Formations inscrites</span><strong>0</strong></div>
+            <div class="dash-stat"><span>Commissions confirmées</span><strong>—</strong></div>
+          </div>
+          <div class="panel"><div class="kicker">Prochaine étape</div><h2>Construisez votre parcours</h2><p style="color:var(--muted)">Explorez les formations et choisissez un domaine à développer. Les formations réelles apparaîtront ici une fois publiées par l'équipe.</p><a href="#formations" class="btn btn-primary" id="browseCourses">Explorer les formations</a></div>
+          <div class="notice" id="activationNotice">Votre profil est créé gratuitement. Pour l'activer, réglez les frais d'adhésion de 2 000 FCFA ou attendez qu'un administrateur autorisé confirme votre activation.</div>
+          <button class="btn btn-primary" id="payMembershipBtn" type="button">Payer 2 000 FCFA pour activer</button>
+          <p class="form-note" id="paymentInfo">Le paiement n'est pas encore connecté dans cette version. Ne considérez pas votre compte comme actif avant la confirmation officielle.</p>
+        </section>
+        <section class="dash-section" id="tab-mycourses" style="padding:0">
+          <div class="panel"><h2>Mes formations</h2><p style="color:var(--muted)">Les formations auxquelles vous êtes inscrit seront affichées ici après configuration de la base de données.</p><div class="empty">Aucune formation n'est encore associée à ce compte.</div></div>
+        </section>
+        <section class="dash-section" id="tab-referral" style="padding:0">
+          <div class="panel"><h2>Mon programme d’affiliation</h2><p style="color:var(--muted)">Invitez de nouveaux membres avec votre lien personnel. Le programme prévoit trois niveaux de parrainage.</p>
+            <label for="referralLink" class="form-note">Votre lien personnel de parrainage</label>
+            <div class="referral-url"><input id="referralLink" readonly value="Connexion requise"><button class="btn btn-primary" id="copyReferral">Copier</button></div>
+            <div class="features" style="margin-top:18px">
+              <article class="feature"><div class="feature-icon">🥇</div><h3>Niveau 1</h3><p>Filleuls directs</p><strong>1 000 FCFA</strong><p class="form-note">par adhésion admissible confirmée</p></article>
+              <article class="feature"><div class="feature-icon">🥈</div><h3>Niveau 2</h3><p>Filleuls de vos filleuls</p><strong>500 FCFA</strong><p class="form-note">par adhésion admissible confirmée</p></article>
+              <article class="feature"><div class="feature-icon">🥉</div><h3>Niveau 3</h3><p>Troisième niveau du réseau</p><strong>250 FCFA</strong><p class="form-note">par adhésion admissible confirmée</p></article>
+            </div>
+            <div class="dash-stats" style="margin-top:18px">
+              <div class="dash-stat"><span>Filleuls directs inscrits</span><strong id="directReferralCount">—</strong></div>
+              <div class="dash-stat"><span>Commissions niveau 1</span><strong>1 000 FCFA / adhésion</strong></div>
+              <div class="dash-stat"><span>Commissions niveau 2</span><strong>500 FCFA / adhésion</strong></div>
+              <div class="dash-stat"><span>Commissions niveau 3</span><strong>250 FCFA / adhésion</strong></div>
+            </div>
+            <div class="notice" style="margin-top:16px">Les commissions ne sont pas versées pour une simple inscription. Elles ne deviennent éligibles qu’après confirmation de l’adhésion de 2 000 FCFA. Le calcul et le versement automatiques nécessitent encore une fonction serveur sécurisée et la vérification du paiement.</div>
+            <p class="form-note" id="referralMsg" role="status"></p>
+          </div>
+        </section>
+        <section class="dash-section" id="tab-account" style="padding:0">
+          <div class="panel"><h2>Mon compte</h2><div class="field"><label>Nom affiché</label><input id="accountName" readonly></div><div class="field"><label>Adresse e-mail</label><input id="accountEmail" readonly></div><div class="field"><label>Identifiant membre</label><input id="accountUid" readonly></div><p class="form-note">Ne partagez jamais votre mot de passe. L'équipe ne vous le demandera pas.</p></div>
+        </section>
+        <section class="dash-section" id="tab-admin" style="padding:0">
+          <div class="panel">
+            <div class="kicker">ACCÈS ADMINISTRATEUR</div>
+            <h2>Gestion des activations</h2>
+            <p style="color:var(--muted)">L'administrateur autorisé peut activer manuellement un profil après vérification. Cette action doit être protégée par les règles Firestore côté serveur.</p>
+            <div class="notice">L'activation manuelle contourne les frais en ligne : ne l'utilisez que si l'administrateur a vérifié le paiement ou autorisé explicitement une exception.</div>
+            <button class="btn btn-outline" id="reloadPending" type="button">Actualiser la liste</button>
+            <p id="adminMsg" class="form-note" role="status"></p>
+            <div id="pendingUsers" style="display:grid;gap:10px;margin-top:14px"><div class="empty">Chargement des profils en attente…</div></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+  <div class="modal">
+    <button class="close" id="closeModal" aria-label="Fermer">×</button>
+    <div class="brand" style="margin-bottom:22px"><span class="brand-mark">IF</span><span>INDÉPENDANCE<small>FINANCIÈRE</small></span></div>
+    <h2 id="authTitle">Créer votre compte</h2><p class="sub" id="authSub">Créez votre profil gratuitement. L'activation coûtera 2 000 FCFA.</p>
+    <form id="authForm">
+      <div class="field" id="nameField"><label for="fullName">Nom complet</label><input id="fullName" name="name" autocomplete="name" placeholder="Votre nom complet" required maxlength="100"></div>
+      <div class="field"><label for="email">Adresse e-mail</label><input id="email" name="email" type="email" autocomplete="email" placeholder="vous@exemple.com" required></div>
+      <div class="field"><label for="password">Mot de passe</label><input id="password" name="password" type="password" autocomplete="new-password" minlength="8" placeholder="8 caractères minimum" required></div>
+      <div class="field" id="refField"><label for="refCode">Code du parrain (facultatif)</label><input id="refCode" name="refCode" placeholder="Code reçu d'un membre" maxlength="100"></div>
+      <div class="field hidden" id="planField"><label for="selectedPlan">Étape du compte</label><select id="selectedPlan"><option value="free">Créer un profil gratuit</option><option value="premium">Créer un profil et voir les frais d'adhésion</option></select></div>
+      <div class="form-error" id="authError" role="alert"></div>
+      <button class="btn btn-primary" id="submitAuth" type="submit" style="width:100%">Créer mon compte</button>
+    </form>
+    <p class="form-note" style="margin-top:12px">En continuant, vous acceptez les conditions d'utilisation et la politique de confidentialité publiées par la plateforme.</p>
+    <div class="switch-auth"><span id="switchText">Vous avez déjà un compte ?</span> <button class="text-btn" id="switchMode" type="button">Se connecter</button></div>
+  </div>
+</div>
+<div class="modal-backdrop" id="courseModal" role="dialog" aria-modal="true" aria-labelledby="courseModalTitle">
+  <div class="modal"><button class="close" id="closeCourse" aria-label="Fermer">×</button><div class="kicker">FORMATION</div><h2 id="courseModalTitle">Formation</h2><p class="sub">Cette catégorie est une présentation provisoire. Le programme détaillé, le formateur, le prix, les dates et les conditions doivent être publiés avant toute inscription payante.</p><div class="notice">Les inscriptions aux cours et les paiements ne sont pas encore activés dans cette version.</div><button class="btn btn-primary" id="courseRegister" style="width:100%">Créer un compte pour être informé</button></div>
+</div>
+
+<footer><div class="wrap footer-row"><div class="brand"><span class="brand-mark">IF</span><span>INDÉPENDANCE<small>FINANCIÈRE</small></span></div><p>© <span id="year"></span> INDÉPENDANCE FINANCIÈRE. Tous droits réservés.</p><p><a href="#cgu">Conditions d’utilisation</a> · <a href="#confidentialite">Confidentialité</a></p></div></footer>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+  import {
+    getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+    signOut, onAuthStateChanged, updateProfile
+  } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
+  import {
+    getFirestore, doc, setDoc, getDoc, serverTimestamp,
+    collection, getDocs, query, where, updateDoc
+  } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+  import { getAnalytics, isSupported } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-analytics.js";
+
+  // Configuration fournie pour le projet Firebase independancefinancieres.
+  const firebaseConfig = {
+    apiKey: "AIzaSyAazRWhszcfCKh18MF6jb3cY7tj6LgdyCc",
+    authDomain: "independancefinancieres.firebaseapp.com",
+    projectId: "independancefinancieres",
+    storageBucket: "independancefinancieres.firebasestorage.app",
+    messagingSenderId: "271275987725",
+    appId: "1:271275987725:web:bb5ff6dea7ff79bd13d644",
+    measurementId: "G-JM77GFFQM1"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  isSupported().then(ok => { if (ok) getAnalytics(app); }).catch(() => {});
+
+  const $ = (id) => document.getElementById(id);
+  let authMode = "register";
+  let chosenCourse = "Formation";
+  let currentUser = null;
+
+  $("year").textContent = new Date().getFullYear();
+
+  function openAuth(mode = "register", plan = "free") {
+    authMode = mode;
+    $("authModal").classList.add("open");
+    $("authError").textContent = "";
+    $("authForm").reset();
+    $("selectedPlan").value = plan;
+    $("planField").classList.toggle("hidden", mode !== "register");
+    $("nameField").classList.toggle("hidden", mode !== "register");
+    $("refField").classList.toggle("hidden", mode !== "register");
+    $("fullName").required = mode === "register";
+    $("password").autocomplete = mode === "register" ? "new-password" : "current-password";
+    $("authTitle").textContent = mode === "register" ? "Créer votre compte" : "Connexion";
+    $("authSub").textContent = mode === "register" ? "Créez votre profil gratuitement. L'activation coûtera 2 000 FCFA." : "Connectez-vous à votre espace membre.";
+    $("submitAuth").textContent = mode === "register" ? "Créer mon compte" : "Se connecter";
+    $("switchText").textContent = mode === "register" ? "Vous avez déjà un compte ?" : "Pas encore de compte ?";
+    $("switchMode").textContent = mode === "register" ? "Se connecter" : "Créer un compte";
+  }
+  function closeAuth() { $("authModal").classList.remove("open"); }
+  $("loginOpen").addEventListener("click", () => openAuth("login"));
+  ["registerOpen","heroRegister","ctaRegister","freePlan"].forEach(id => $(id).addEventListener("click", () => openAuth("register","free")));
+  $("premiumPlan").addEventListener("click", () => openAuth("register","premium"));
+  $("closeModal").addEventListener("click", closeAuth);
+  $("authModal").addEventListener("click", e => { if (e.target === $("authModal")) closeAuth(); });
+  $("switchMode").addEventListener("click", () => openAuth(authMode === "register" ? "login" : "register"));
+
+  function friendlyAuthError(error) {
+    const code = error?.code || "";
+    const messages = {
+      "auth/email-already-in-use":"Cette adresse e-mail possède déjà un compte. Connectez-vous.",
+      "auth/invalid-email":"L'adresse e-mail n'est pas valide.",
+      "auth/weak-password":"Choisissez un mot de passe d'au moins 8 caractères.",
+      "auth/invalid-credential":"E-mail ou mot de passe incorrect.",
+      "auth/user-not-found":"Aucun compte trouvé pour cette adresse e-mail.",
+      "auth/wrong-password":"E-mail ou mot de passe incorrect.",
+      "auth/too-many-requests":"Trop de tentatives. Réessayez plus tard.",
+      "auth/network-request-failed":"Connexion réseau impossible. Vérifiez votre connexion Internet.",
+      "permission-denied":"Firebase refuse l'accès à Firestore. Vérifiez les règles de sécurité.",
+      "unavailable":"Le service est temporairement indisponible. Réessayez."
+    };
+    return messages[code] || ("Une erreur est survenue (" + (code || "inconnue") + "). Vérifiez la configuration Firebase et les règles Firestore.");
+  }
+
+  $("authForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    $("authError").textContent = "";
+    $("submitAuth").disabled = true;
+    $("submitAuth").textContent = "Veuillez patienter…";
+    const email = $("email").value.trim();
+    const password = $("password").value;
+    const fullName = $("fullName").value.trim();
+    const requestedPlan = $("selectedPlan").value;
+    const referralCode = $("refCode").value.trim();
+    try {
+      if (authMode === "register") {
+        const credential = await createUserWithEmailAndPassword(auth, email, password);
+        if (fullName) await updateProfile(credential.user, { displayName: fullName });
+        // Le navigateur ne peut pas activer un compte ni attribuer de rôle privilégié.
+        // Tout nouveau profil reste en attente jusqu'à confirmation serveur des 2 000 FCFA.
+        const profile = {
+          uid: credential.user.uid,
+          displayName: fullName,
+          email: credential.user.email,
+          role: "member",
+          status: "pending_payment",
+          membership: "inactive",
+          membershipFeeAmount: 2000,
+          membershipFeeCurrency: "XOF",
+          membershipPaymentStatus: "unpaid",
+          referralCode: credential.user.uid,
+          referredByCode: referralCode || null,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        };
+        try {
+          await setDoc(doc(db, "users", credential.user.uid), profile);
+        } catch (profileError) {
+          console.error("Création du profil Firestore impossible", profileError);
+          $("authError").textContent = "Compte Firebase Auth créé, mais le profil n'a pas pu être enregistré dans Firestore. Demandez la vérification des règles Firestore. Ne recréez pas le compte; essayez de vous connecter.";
+          $("submitAuth").disabled = false;
+          $("submitAuth").textContent = "Créer mon compte";
+          return;
+        }
+        closeAuth();
+        alert("Votre profil a été créé gratuitement. Pour l'activer, vous devrez payer les frais d'adhésion de 2 000 FCFA. Le paiement sera activé lorsque FedaPay et la vérification côté serveur seront configurés.");
+      } else {
+        await signInWithEmailAndPassword(auth, email, password);
+        closeAuth();
+      }
+    } catch (error) {
+      console.error(error);
+      $("authError").textContent = friendlyAuthError(error);
+    } finally {
+      $("submitAuth").disabled = false;
+      $("submitAuth").textContent = authMode === "register" ? "Créer mon compte" : "Se connecter";
+    }
+  });
+
+  $("payMembershipBtn").addEventListener("click", () => {
+    alert("Le paiement de 2 000 FCFA n'est pas encore connecté. Pour éviter toute fraude, le compte ne sera activé qu'après l'intégration FedaPay et la confirmation du paiement par le serveur.");
+  });
+
+  $("logoutBtn").addEventListener("click", async () => {
+    try { await signOut(auth); }
+    catch (error) { alert(friendlyAuthError(error)); }
+  });
+
+  function referralUrl(user) {
+    const url = new URL(window.location.href);
+    url.hash = "";
+    url.searchParams.set("ref", user.uid);
+    return url.toString();
+  }
+  function showDashboard(user, profile = {}) {
+    currentUser = user;
+    $("publicPage").classList.add("hidden");
+    $("dashboard").classList.add("active");
+    $("siteHeader").classList.add("hidden");
+    const name = profile.displayName || user.displayName || user.email?.split("@")[0] || "membre";
+    $("memberName").textContent = name;
+    const isAdmin = profile.role === "admin" || profile.role === "superadmin";
+    $("adminNav").classList.toggle("hidden", !isAdmin);
+    $("memberStatus").textContent = profile.status === "active" && profile.membership !== "inactive" ? "Actif" : "En attente de paiement"; 
+    $("activationNotice").classList.toggle("hidden", profile.status === "active");
+    $("payMembershipBtn").classList.toggle("hidden", profile.status === "active");
+    $("paymentInfo").textContent = profile.status === "active" ? "Votre adhésion est active." : "Le paiement FedaPay n'est pas encore connecté dans cette version. Le bouton ne prélève pas d'argent.";
+    $("accountName").value = name;
+    $("accountEmail").value = user.email || "";
+    $("accountUid").value = user.uid;
+    $("referralLink").value = referralUrl(user);
+    loadDirectReferrals(user).catch(error => {
+      console.warn("Liste des filleuls directs indisponible", error);
+      $("directReferralCount").textContent = "—";
+      $("referralMsg").textContent = "Le comptage des filleuls sera disponible lorsque les règles Firestore autoriseront cette lecture.";
+    });
+  }
+
+  async function loadDirectReferrals(user) {
+    const referralsQuery = query(collection(db, "users"), where("referredByCode", "==", user.uid));
+    const snapshot = await getDocs(referralsQuery);
+    $("directReferralCount").textContent = String(snapshot.size);
+  }
+  function showPublic() {
+    currentUser = null;
+    $("publicPage").classList.remove("hidden");
+    $("dashboard").classList.remove("active");
+    $("siteHeader").classList.remove("hidden");
+  }
+
+  onAuthStateChanged(auth, async user => {
+    if (!user) { showPublic(); return; }
+    try {
+      const snap = await getDoc(doc(db, "users", user.uid));
+      if (snap.exists()) showDashboard(user, snap.data());
+      else {
+        // Auth peut réussir même si la création du profil a été bloquée par les règles.
+        showDashboard(user, { displayName: user.displayName || "", membership: "free" });
+        $("referralMsg").textContent = "Le profil Firestore n'a pas été trouvé. Contactez l'administrateur pour le réparer.";
+      }
+    } catch (error) {
+      console.error(error);
+      showDashboard(user, { displayName: user.displayName || "", membership: "free" });
+      $("referralMsg").textContent = "Profil inaccessible dans Firestore. Vérifiez les règles de sécurité.";
+    }
+  });
+
+  async function loadPendingUsers() {
+    const list = $("pendingUsers");
+    const msg = $("adminMsg");
+    list.innerHTML = '<div class="empty">Chargement des profils…</div>';
+    msg.textContent = "";
+    if (!currentUser) {
+      list.innerHTML = '<div class="empty">Connectez-vous avec un compte administrateur.</div>';
+      return;
+    }
+    try {
+      // Firestore Rules must restrict this query and update to trusted admin users only.
+      const pendingQuery = query(collection(db, "users"), where("status", "==", "pending_payment"));
+      const result = await getDocs(pendingQuery);
+      if (result.empty) {
+        list.innerHTML = '<div class="empty">Aucun profil en attente de paiement.</div>';
+        return;
+      }
+      list.innerHTML = "";
+      result.forEach(profileDoc => {
+        const data = profileDoc.data();
+        const card = document.createElement("div");
+        card.className = "panel";
+        card.style.padding = "15px";
+        const info = document.createElement("div");
+        const title = document.createElement("strong");
+        title.textContent = data.displayName || "Membre sans nom";
+        const email = document.createElement("div");
+        email.style.cssText = "color:var(--muted);font-size:13px";
+        email.textContent = data.email || "E-mail non renseigné";
+        const uid = document.createElement("div");
+        uid.style.cssText = "color:var(--muted);font-size:11px;overflow-wrap:anywhere";
+        uid.textContent = "ID : " + profileDoc.id;
+        info.append(title, email, uid);
+        const activate = document.createElement("button");
+        activate.type = "button";
+        activate.className = "btn btn-primary btn-sm";
+        activate.style.marginTop = "10px";
+        activate.textContent = "Activer ce profil";
+        activate.addEventListener("click", async () => {
+          const confirmed = confirm("Confirmer l'activation manuelle de " + (data.displayName || data.email || profileDoc.id) + " ? Vérifie d'abord le paiement de 2 000 FCFA ou l'autorisation d'exception.");
+          if (!confirmed) return;
+          activate.disabled = true;
+          activate.textContent = "Activation…";
+          try {
+            await updateDoc(doc(db, "users", profileDoc.id), {
+              status: "active",
+              membership: "active",
+              membershipPaymentStatus: "admin_approved",
+              activatedBy: currentUser.uid,
+              activatedAt: serverTimestamp(),
+              updatedAt: serverTimestamp()
+            });
+            msg.textContent = "Profil activé. La liste est actualisée.";
+            await loadPendingUsers();
+          } catch (error) {
+            console.error(error);
+            msg.textContent = "Activation refusée par Firebase. Vérifie que ce compte est administrateur autorisé et que les règles Firestore permettent cette opération de façon sécurisée.";
+            activate.disabled = false;
+            activate.textContent = "Activer ce profil";
+          }
+        });
+        card.append(info, activate);
+        list.append(card);
+      });
+    } catch (error) {
+      console.error(error);
+      list.innerHTML = '<div class="empty">Impossible de charger les profils. Vérifie les règles Firestore : seuls les administrateurs autorisés doivent pouvoir consulter les profils en attente.</div>';
+      msg.textContent = "Erreur : " + (error.code || "permission-denied");
+    }
+  }
+  $("reloadPending").addEventListener("click", loadPendingUsers);
+
+  document.querySelectorAll(".side-nav button").forEach(button => {
+    button.addEventListener("click", () => {
+      document.querySelectorAll(".side-nav button").forEach(b => b.classList.toggle("active", b === button));
+      document.querySelectorAll(".dash-section").forEach(s => s.classList.toggle("active", s.id === "tab-" + button.dataset.tab));
+      if (button.dataset.tab === "admin") {
+        if (button.classList.contains("hidden")) return;
+        loadPendingUsers();
+      }
+    });
+  });
+  $("copyReferral").addEventListener("click", async () => {
+    if (!currentUser) return;
+    try {
+      await navigator.clipboard.writeText($("referralLink").value);
+      $("referralMsg").textContent = "Lien copié.";
+    } catch {
+      $("referralLink").select();
+      $("referralMsg").textContent = "Sélectionnez le lien puis copiez-le.";
+    }
+  });
+  document.querySelectorAll(".course-action").forEach(button => button.addEventListener("click", () => {
+    chosenCourse = button.dataset.course || "Formation";
+    $("courseModalTitle").textContent = chosenCourse;
+    $("courseModal").classList.add("open");
+  }));
+  $("closeCourse").addEventListener("click", () => $("courseModal").classList.remove("open"));
+  $("courseModal").addEventListener("click", e => { if (e.target === $("courseModal")) $("courseModal").classList.remove("open"); });
+  $("courseRegister").addEventListener("click", () => {
+    $("courseModal").classList.remove("open");
+    if (auth.currentUser) {
+      document.querySelector('[data-tab="mycourses"]').click();
+      $("referralMsg").textContent = "Le cours « " + chosenCourse + " » n'est pas encore publié dans la base de données.";
+    } else openAuth("register","free");
+  });
+  $("browseCourses").addEventListener("click", e => {
+    e.preventDefault();
+    $("publicPage").classList.remove("hidden");
+    $("dashboard").classList.remove("active");
+    $("siteHeader").classList.remove("hidden");
+    location.hash = "formations";
+  });
+
+  // Prend le code de parrain dans ?ref=... et le préremplit à l'inscription.
+  const refFromUrl = new URLSearchParams(window.location.search).get("ref");
+  if (refFromUrl) $("refCode").value = refFromUrl;
+
+  // Pas de clés secrètes FedaPay ici. Le paiement nécessite un backend et un webhook vérifié.
+</script>
+</body>
+</html>
