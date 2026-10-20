@@ -349,6 +349,10 @@
   isSupported().then(ok => { if (ok) getAnalytics(app); }).catch(() => {});
 
   const $ = (id) => document.getElementById(id);
+  const ADMIN_EMAIL = "infojusticededieu@gmail.com";
+  function isAdministrator(user) {
+    return !!user && (user.email || "").trim().toLowerCase() === ADMIN_EMAIL;
+  }
   let authMode = "register";
   let chosenCourse = "Formation";
   let currentUser = null;
@@ -472,26 +476,34 @@
   }
   function showDashboard(user, profile = {}) {
     currentUser = user;
+    const admin = isAdministrator(user);
     $("publicPage").classList.add("hidden");
     $("dashboard").classList.add("active");
     $("siteHeader").classList.add("hidden");
-    const name = profile.displayName || user.displayName || user.email?.split("@")[0] || "membre";
+    const name = admin ? "Administrateur" : (profile.displayName || user.displayName || user.email?.split("@")[0] || "membre");
     $("memberName").textContent = name;
-    const isAdmin = profile.role === "admin" || profile.role === "superadmin";
-    $("adminNav").classList.toggle("hidden", !isAdmin);
-    $("memberStatus").textContent = profile.status === "active" && profile.membership !== "inactive" ? "Actif" : "En attente de paiement"; 
-    $("activationNotice").classList.toggle("hidden", profile.status === "active");
-    $("payMembershipBtn").classList.toggle("hidden", profile.status === "active");
-    $("paymentInfo").textContent = profile.status === "active" ? "Votre adhésion est active." : "Le paiement FedaPay n'est pas encore connecté dans cette version. Le bouton ne prélève pas d'argent.";
+    const active = admin || (profile.status === "active" && profile.membership !== "inactive");
+    $("adminNav").classList.toggle("hidden", !admin);
+    $("memberStatus").textContent = admin ? "Administrateur — accès autorisé" : (active ? "Actif" : "En attente de paiement");
+    $("activationNotice").classList.toggle("hidden", active);
+    $("payMembershipBtn").classList.toggle("hidden", active);
+    $("paymentInfo").textContent = admin
+      ? "Compte administrateur validé automatiquement. Aucune adhésion payante n'est requise."
+      : (active ? "Votre adhésion est active." : "Le paiement FedaPay n'est pas encore connecté dans cette version. Le bouton ne prélève pas d'argent.");
     $("accountName").value = name;
     $("accountEmail").value = user.email || "";
     $("accountUid").value = user.uid;
     $("referralLink").value = referralUrl(user);
-    loadDirectReferrals(user).catch(error => {
-      console.warn("Liste des filleuls directs indisponible", error);
+    if (admin) {
       $("directReferralCount").textContent = "—";
-      $("referralMsg").textContent = "Le comptage des filleuls sera disponible lorsque les règles Firestore autoriseront cette lecture.";
-    });
+      $("referralMsg").textContent = "Compte administrateur.";
+    } else {
+      loadDirectReferrals(user).catch(error => {
+        console.warn("Liste des filleuls directs indisponible", error);
+        $("directReferralCount").textContent = "—";
+        $("referralMsg").textContent = "Le comptage des filleuls n'est pas disponible actuellement.";
+      });
+    }
   }
 
   async function loadDirectReferrals(user) {
@@ -509,17 +521,42 @@
   onAuthStateChanged(auth, async user => {
     if (!user) { showPublic(); return; }
     try {
+      // Le compte propriétaire est validé automatiquement par son adresse dédiée.
+      // Les règles Firestore doivent autoriser uniquement cette adresse à faire cette mise à jour.
+      if (isAdministrator(user)) {
+        await setDoc(doc(db, "users", user.uid), {
+          uid: user.uid,
+          displayName: user.displayName || "Administrateur",
+          email: user.email,
+          role: "admin",
+          status: "active",
+          membership: "active",
+          membershipFeeAmount: 0,
+          membershipFeeCurrency: "XOF",
+          membershipPaymentStatus: "admin_approved",
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+        const adminSnap = await getDoc(doc(db, "users", user.uid));
+        showDashboard(user, adminSnap.exists() ? adminSnap.data() : {
+          displayName: "Administrateur", role: "admin", status: "active", membership: "active"
+        });
+        return;
+      }
       const snap = await getDoc(doc(db, "users", user.uid));
       if (snap.exists()) showDashboard(user, snap.data());
       else {
-        // Auth peut réussir même si la création du profil a été bloquée par les règles.
-        showDashboard(user, { displayName: user.displayName || "", membership: "free" });
+        showDashboard(user, { displayName: user.displayName || "", status: "pending_payment", membership: "inactive" });
         $("referralMsg").textContent = "Le profil Firestore n'a pas été trouvé. Contactez l'administrateur pour le réparer.";
       }
     } catch (error) {
-      console.error(error);
-      showDashboard(user, { displayName: user.displayName || "", membership: "free" });
-      $("referralMsg").textContent = "Profil inaccessible dans Firestore. Vérifiez les règles de sécurité.";
+      console.error("Chargement/initialisation du profil impossible", error);
+      // L'interface reconnaît l'adresse administrateur, mais les règles restent la vraie sécurité.
+      showDashboard(user, isAdministrator(user)
+        ? { displayName: "Administrateur", role: "admin", status: "active", membership: "active" }
+        : { displayName: user.displayName || "", status: "pending_payment", membership: "inactive" });
+      $("referralMsg").textContent = isAdministrator(user)
+        ? "Le compte administrateur est reconnu, mais Firestore a refusé la mise à jour. Publiez les règles Firestore administrateur puis reconnectez-vous."
+        : "Profil inaccessible dans Firestore. Vérifiez les règles de sécurité.";
     }
   });
 
@@ -528,8 +565,9 @@
     const msg = $("adminMsg");
     list.innerHTML = '<div class="empty">Chargement des profils…</div>';
     msg.textContent = "";
-    if (!currentUser) {
-      list.innerHTML = '<div class="empty">Connectez-vous avec un compte administrateur.</div>';
+    if (!isAdministrator(currentUser)) {
+      list.innerHTML = '<div class="empty">Accès réservé à l’administrateur autorisé.</div>';
+      msg.textContent = "Connectez-vous avec l’adresse administrateur configurée.";
       return;
     }
     try {
