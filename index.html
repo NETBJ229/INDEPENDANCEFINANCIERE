@@ -241,6 +241,7 @@
         <button data-tab="mycourses">🎓 Mes formations</button>
         <button data-tab="referral">🤝 Mon affiliation</button>
         <button data-tab="account">👤 Mon compte</button>
+        <button data-tab="wallet">💰 Portefeuille & retraits</button>
         <button data-tab="admin" id="adminNav" class="hidden">🛡️ Administration</button>
       </aside>
       <div class="dash-content">
@@ -249,6 +250,7 @@
             <div class="dash-stat"><span>Statut du compte</span><strong id="memberStatus" style="font-size:18px">En attente</strong></div>
             <div class="dash-stat"><span>Formations inscrites</span><strong>0</strong></div>
             <div class="dash-stat"><span>Commissions confirmées</span><strong>—</strong></div>
+            <div class="dash-stat"><span>Portefeuille</span><strong id="walletBalanceOverview">0 FCFA</strong></div>
           </div>
           <div class="panel"><div class="kicker">Prochaine étape</div><h2>Construisez votre parcours</h2><p style="color:var(--muted)">Explorez les formations et choisissez un domaine à développer. Les formations réelles apparaîtront ici une fois publiées par l'équipe.</p><a href="#formations" class="btn btn-primary" id="browseCourses">Explorer les formations</a></div>
           <div class="notice" id="activationNotice">Votre profil est créé gratuitement. Pour l'activer, réglez les frais d'adhésion de 2 000 FCFA ou attendez qu'un administrateur autorisé confirme votre activation.</div>
@@ -277,18 +279,34 @@
             <p class="form-note" id="referralMsg" role="status"></p>
           </div>
         </section>
+        <section class="dash-section" id="tab-wallet" style="padding:0">
+          <div class="panel"><div class="kicker">PORTEFEUILLE</div><h2>Mon portefeuille</h2>
+            <div class="dash-stat"><span>Solde disponible enregistré</span><strong id="walletBalance">0 FCFA</strong></div>
+            <p class="form-note">Le solde est modifié uniquement par l’administration. Une demande de retrait n’est pas un paiement automatique.</p>
+            <form id="withdrawForm" style="margin-top:18px;max-width:480px">
+              <div class="field"><label for="withdrawAmount">Montant à retirer (FCFA)</label><input id="withdrawAmount" type="number" min="500" step="1" required placeholder="Ex. 5000"></div>
+              <div class="field"><label for="withdrawMethod">Moyen de réception</label><select id="withdrawMethod" required><option value="">Choisir un moyen</option><option value="MTN Mobile Money">MTN Mobile Money</option><option value="Moov Money">Moov Money</option><option value="Autre">Autre</option></select></div>
+              <div class="field"><label for="withdrawPhone">Numéro du bénéficiaire</label><input id="withdrawPhone" type="tel" required maxlength="30" placeholder="Numéro Mobile Money"></div>
+              <div class="field"><label for="withdrawName">Nom du bénéficiaire</label><input id="withdrawName" required maxlength="100" placeholder="Nom inscrit sur le compte"></div>
+              <button class="btn btn-primary" type="submit" id="withdrawSubmit">Envoyer la demande de retrait</button><p id="withdrawMsg" class="form-note" role="status"></p>
+            </form>
+          </div>
+          <div class="panel"><h2>Mes demandes de retrait</h2><div id="myWithdrawals" class="empty">Chargement…</div></div>
+        </section>
         <section class="dash-section" id="tab-account" style="padding:0">
           <div class="panel"><h2>Mon compte</h2><div class="field"><label>Nom affiché</label><input id="accountName" readonly></div><div class="field"><label>Adresse e-mail</label><input id="accountEmail" readonly></div><div class="field"><label>Identifiant membre</label><input id="accountUid" readonly></div><p class="form-note">Ne partagez jamais votre mot de passe. L'équipe ne vous le demandera pas.</p></div>
         </section>
         <section class="dash-section" id="tab-admin" style="padding:0">
           <div class="panel">
             <div class="kicker">ACCÈS ADMINISTRATEUR</div>
-            <h2>Gestion des activations</h2>
-            <p style="color:var(--muted)">L'administrateur autorisé peut activer manuellement un profil après vérification. Cette action doit être protégée par les règles Firestore côté serveur.</p>
-            <div class="notice">L'activation manuelle contourne les frais en ligne : ne l'utilisez que si l'administrateur a vérifié le paiement ou autorisé explicitement une exception.</div>
-            <button class="btn btn-outline" id="reloadPending" type="button">Actualiser la liste</button>
+            <h2>Administration de la plateforme</h2>
+            <p style="color:var(--muted)">Gestion des profils, demandes de retrait, suspension et crédits manuels du portefeuille.</p>
+            <div class="notice">Vérifiez chaque opération avant validation. Le crédit manuel est une écriture administrative et doit être justifié. La suppression retire le profil Firestore, mais ne supprime pas le compte Firebase Authentication; une suppression complète du compte Auth exige une opération serveur sécurisée.</div>
+            <button class="btn btn-outline" id="reloadPending" type="button">Actualiser toutes les données</button>
             <p id="adminMsg" class="form-note" role="status"></p>
-            <div id="pendingUsers" style="display:grid;gap:10px;margin-top:14px"><div class="empty">Chargement des profils en attente…</div></div>
+            <h3 style="margin-top:24px">Demandes d’activation</h3><div id="pendingUsers" style="display:grid;gap:10px;margin-top:14px"><div class="empty">Chargement…</div></div>
+            <h3 style="margin-top:24px">Tous les profils membres</h3><div id="allUsers" style="display:grid;gap:10px;margin-top:14px"><div class="empty">Chargement…</div></div>
+            <h3 style="margin-top:24px">Demandes de retrait</h3><div id="withdrawalRequests" style="display:grid;gap:10px;margin-top:14px"><div class="empty">Chargement…</div></div>
           </div>
         </section>
       </div>
@@ -328,7 +346,7 @@
   } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
   import {
     getFirestore, doc, setDoc, getDoc, serverTimestamp,
-    collection, getDocs, query, where, updateDoc
+    collection, getDocs, query, where, updateDoc, addDoc, deleteDoc, writeBatch
   } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
   import { getAnalytics, isSupported } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-analytics.js";
 
@@ -430,6 +448,7 @@
           membershipFeeAmount: 2000,
           membershipFeeCurrency: "XOF",
           membershipPaymentStatus: "unpaid",
+          walletBalance: 0,
           referralCode: credential.user.uid,
           referredByCode: referralCode || null,
           createdAt: serverTimestamp(),
@@ -493,7 +512,11 @@
     $("accountName").value = name;
     $("accountEmail").value = user.email || "";
     $("accountUid").value = user.uid;
+    const wallet = Number(profile.walletBalance || 0);
+    $("walletBalance").textContent = wallet.toLocaleString("fr-FR") + " FCFA";
+    $("walletBalanceOverview").textContent = wallet.toLocaleString("fr-FR") + " FCFA";
     $("referralLink").value = referralUrl(user);
+    if (!admin) loadMyWithdrawals(user).catch(err => { console.warn(err); $("myWithdrawals").textContent = "Impossible de charger les demandes pour le moment."; });
     if (admin) {
       $("directReferralCount").textContent = "—";
       $("referralMsg").textContent = "Compte administrateur.";
@@ -574,78 +597,110 @@
     }
   });
 
+  const money = value => (Number(value || 0)).toLocaleString("fr-FR") + " FCFA";
+  function adminCard(title, subtitle, buttons = []) {
+    const card = document.createElement("div"); card.className = "panel"; card.style.padding = "14px";
+    const h = document.createElement("strong"); h.textContent = title; card.append(h);
+    const p = document.createElement("div"); p.style.cssText = "color:var(--muted);font-size:13px;overflow-wrap:anywhere;margin:5px 0"; p.textContent = subtitle; card.append(p);
+    const actions = document.createElement("div"); actions.style.cssText = "display:flex;gap:8px;flex-wrap:wrap;margin-top:10px";
+    buttons.forEach(b => { const btn=document.createElement("button"); btn.type="button"; btn.className="btn btn-outline btn-sm"; btn.textContent=b.label; btn.addEventListener("click", b.onClick); actions.append(btn); });
+    if(buttons.length) card.append(actions); return card;
+  }
+  async function loadMyWithdrawals(user) {
+    const box = $("myWithdrawals"); box.textContent = "Chargement…";
+    const q = query(collection(db,"withdrawals"), where("userId","==",user.uid));
+    const snap = await getDocs(q);
+    if (snap.empty) { box.textContent = "Aucune demande de retrait pour le moment."; return; }
+    box.innerHTML = "";
+    snap.forEach(d => { const x=d.data(); const el=document.createElement("div"); el.className="notice"; el.textContent = money(x.amount) + " · " + (x.method||"Moyen non précisé") + " · " + (x.status||"pending") + (x.adminNote ? " · Note : "+x.adminNote : ""); box.append(el); });
+  }
   async function loadPendingUsers() {
-    const list = $("pendingUsers");
-    const msg = $("adminMsg");
-    list.innerHTML = '<div class="empty">Chargement des profils…</div>';
-    msg.textContent = "";
-    if (!isAdministrator(currentUser)) {
-      list.innerHTML = '<div class="empty">Accès réservé à l’administrateur autorisé.</div>';
-      msg.textContent = "Connectez-vous avec l’adresse administrateur configurée.";
-      return;
-    }
+    const list = $("pendingUsers"), all = $("allUsers"), withdrawals = $("withdrawalRequests"), msg = $("adminMsg");
+    [list,all,withdrawals].forEach(el => el.innerHTML='<div class="empty">Chargement…</div>'); msg.textContent="";
+    if (!isAdministrator(currentUser)) { msg.textContent="Accès réservé à l’administrateur autorisé."; return; }
     try {
-      // Firestore Rules must restrict this query and update to trusted admin users only.
-      const pendingQuery = query(collection(db, "users"), where("status", "==", "pending_payment"));
-      const result = await getDocs(pendingQuery);
-      if (result.empty) {
-        list.innerHTML = '<div class="empty">Aucun profil en attente de paiement.</div>';
-        return;
-      }
-      list.innerHTML = "";
-      result.forEach(profileDoc => {
-        const data = profileDoc.data();
-        const card = document.createElement("div");
-        card.className = "panel";
-        card.style.padding = "15px";
-        const info = document.createElement("div");
-        const title = document.createElement("strong");
-        title.textContent = data.displayName || "Membre sans nom";
-        const email = document.createElement("div");
-        email.style.cssText = "color:var(--muted);font-size:13px";
-        email.textContent = data.email || "E-mail non renseigné";
-        const uid = document.createElement("div");
-        uid.style.cssText = "color:var(--muted);font-size:11px;overflow-wrap:anywhere";
-        uid.textContent = "ID : " + profileDoc.id;
-        info.append(title, email, uid);
-        const activate = document.createElement("button");
-        activate.type = "button";
-        activate.className = "btn btn-primary btn-sm";
-        activate.style.marginTop = "10px";
-        activate.textContent = "Activer ce profil";
-        activate.addEventListener("click", async () => {
-          const confirmed = confirm("Confirmer l'activation manuelle de " + (data.displayName || data.email || profileDoc.id) + " ? Vérifie d'abord le paiement de 2 000 FCFA ou l'autorisation d'exception.");
-          if (!confirmed) return;
-          activate.disabled = true;
-          activate.textContent = "Activation…";
-          try {
-            await updateDoc(doc(db, "users", profileDoc.id), {
-              status: "active",
-              membership: "active",
-              membershipPaymentStatus: "admin_approved",
-              activatedBy: currentUser.uid,
-              activatedAt: serverTimestamp(),
-              updatedAt: serverTimestamp()
-            });
-            msg.textContent = "Profil activé. La liste est actualisée.";
-            await loadPendingUsers();
-          } catch (error) {
-            console.error(error);
-            msg.textContent = "Activation refusée par Firebase. Vérifie que ce compte est administrateur autorisé et que les règles Firestore permettent cette opération de façon sécurisée.";
-            activate.disabled = false;
-            activate.textContent = "Activer ce profil";
-          }
-        });
-        card.append(info, activate);
-        list.append(card);
+      const usersSnap = await getDocs(collection(db,"users"));
+      list.innerHTML=""; all.innerHTML="";
+      const users = []; usersSnap.forEach(d => users.push({id:d.id,data:d.data()}));
+      const pending = users.filter(x => x.data.status === "pending_payment");
+      if (!pending.length) list.innerHTML='<div class="empty">Aucun profil en attente d’activation.</div>';
+      pending.forEach(({id,data}) => list.append(adminCard(data.displayName||"Membre", (data.email||"E-mail absent")+" · "+id, [{label:"Activer le profil",onClick:async()=>{
+        if(!confirm("Activer le profil de "+(data.displayName||data.email||id)+" ? Vérifiez le paiement ou l’exception autorisée.")) return;
+        try { await updateDoc(doc(db,"users",id),{status:"active",membership:"active",membershipPaymentStatus:"admin_approved",activatedBy:currentUser.uid,activatedAt:serverTimestamp(),updatedAt:serverTimestamp()}); msg.textContent="Profil activé."; await loadPendingUsers(); }
+        catch(e){console.error(e);msg.textContent="Échec activation : "+(e.code||e.message);}
+      }}])));
+      if (!users.length) all.innerHTML='<div class="empty">Aucun profil membre.</div>';
+      users.forEach(({id,data}) => {
+        if (id === currentUser.uid || (data.email||"").toLowerCase() === ADMIN_EMAIL) return;
+        const status = data.status || "inconnu";
+        const buttons = [
+          {label: status === "suspended" ? "Réactiver" : "Suspendre", onClick:async()=>{
+            const next = status === "suspended" ? (data.membership === "active" ? "active" : "pending_payment") : "suspended";
+            if(!confirm((next==="suspended"?"Suspendre":"Réactiver")+" le profil "+(data.displayName||data.email||id)+" ?")) return;
+            try { await updateDoc(doc(db,"users",id),{status:next,updatedAt:serverTimestamp(),statusChangedBy:currentUser.uid,statusChangedAt:serverTimestamp()}); msg.textContent="Statut du profil mis à jour."; await loadPendingUsers(); }
+            catch(e){console.error(e);msg.textContent="Modification refusée : "+(e.code||e.message);}
+          }},
+          {label:"Créditer le portefeuille",onClick:async()=>{
+            const raw=prompt("Montant positif à créditer en FCFA pour "+(data.displayName||data.email||id)+":"); if(raw===null)return;
+            const amount=Number(raw); if(!Number.isSafeInteger(amount)||amount<=0){alert("Saisissez un montant entier supérieur à zéro.");return;}
+            const reason=prompt("Motif du crédit (obligatoire) :"); if(!reason||!reason.trim()){alert("Le motif est obligatoire.");return;}
+            try {
+              const batch=writeBatch(db), userRef=doc(db,"users",id), txRef=doc(collection(db,"walletTransactions"));
+              batch.update(userRef,{walletBalance:Number(data.walletBalance||0)+amount,updatedAt:serverTimestamp(),walletUpdatedBy:currentUser.uid});
+              batch.set(txRef,{userId:id,type:"credit",amount,currency:"XOF",reason:reason.trim(),createdBy:currentUser.uid,createdAt:serverTimestamp(),source:"admin_manual"});
+              await batch.commit(); msg.textContent="Crédit manuel enregistré : "+money(amount)+"."; await loadPendingUsers();
+            } catch(e){console.error(e);msg.textContent="Crédit refusé : "+(e.code||e.message);}
+          }},
+          {label:"Supprimer le profil",onClick:async()=>{
+            const typed=prompt("Cette action supprimera le profil Firestore, pas le compte Firebase Authentication. Pour confirmer, saisissez SUPPRIMER."); if(typed!=="SUPPRIMER")return;
+            try { await deleteDoc(doc(db,"users",id)); msg.textContent="Profil Firestore supprimé. Le compte Auth doit être supprimé séparément côté serveur."; await loadPendingUsers(); }
+            catch(e){console.error(e);msg.textContent="Suppression refusée : "+(e.code||e.message);}
+          }}
+        ];
+        all.append(adminCard((data.displayName||"Membre sans nom")+" · "+status,(data.email||"E-mail absent")+" · Solde : "+money(data.walletBalance||0)+" · ID : "+id,buttons));
       });
-    } catch (error) {
-      console.error(error);
-      list.innerHTML = '<div class="empty">Impossible de charger les profils. Vérifie les règles Firestore : seuls les administrateurs autorisés doivent pouvoir consulter les profils en attente.</div>';
-      msg.textContent = "Erreur : " + (error.code || "permission-denied");
+      const wSnap = await getDocs(collection(db,"withdrawals")); withdrawals.innerHTML="";
+      if(wSnap.empty) withdrawals.innerHTML='<div class="empty">Aucune demande de retrait.</div>';
+      wSnap.forEach(d=>{
+        const x=d.data();
+        const buttons=[];
+        if((x.status||"pending")==="pending") {
+          buttons.push({label:"Marquer payée",onClick:async()=>{
+            const note=prompt("Référence/preuve de paiement ou note administrative (obligatoire) :"); if(!note||!note.trim())return;
+            try {
+              const userRef=doc(db,"users",x.userId), userSnap=await getDoc(userRef); if(!userSnap.exists())throw new Error("Profil utilisateur introuvable");
+              const bal=Number(userSnap.data().walletBalance||0), amount=Number(x.amount||0);
+              if(amount<=0||bal<amount){alert("Solde insuffisant ou montant invalide. Ne validez pas ce retrait.");return;}
+              const batch=writeBatch(db), txRef=doc(collection(db,"walletTransactions"));
+              batch.update(userRef,{walletBalance:bal-amount,updatedAt:serverTimestamp(),walletUpdatedBy:currentUser.uid});
+              batch.update(doc(db,"withdrawals",d.id),{status:"paid",adminNote:note.trim(),processedBy:currentUser.uid,processedAt:serverTimestamp()});
+              batch.set(txRef,{userId:x.userId,type:"withdrawal",amount:-amount,currency:"XOF",reason:"Retrait payé — "+note.trim(),createdBy:currentUser.uid,createdAt:serverTimestamp(),withdrawalId:d.id});
+              await batch.commit(); msg.textContent="Retrait marqué payé et solde débité."; await loadPendingUsers();
+            }catch(e){console.error(e);msg.textContent="Impossible de valider le retrait : "+(e.code||e.message);}
+          }});
+          buttons.push({label:"Refuser",onClick:async()=>{const note=prompt("Motif du refus (obligatoire) :");if(!note||!note.trim())return;try{await updateDoc(doc(db,"withdrawals",d.id),{status:"rejected",adminNote:note.trim(),processedBy:currentUser.uid,processedAt:serverTimestamp()});msg.textContent="Demande refusée.";await loadPendingUsers();}catch(e){msg.textContent="Refus impossible : "+(e.code||e.message);}}});
+        }
+        withdrawals.append(adminCard(money(x.amount)+" · "+(x.status||"pending"),"Membre : "+(x.userName||x.userId)+" · "+(x.method||"")+" · "+(x.phone||"")+" · "+(x.beneficiaryName||"")+(x.adminNote?" · Note : "+x.adminNote:"),buttons));
+      });
+    } catch(error) {
+      console.error(error); msg.textContent="Erreur de chargement : "+(error.code||error.message||"inconnue")+". Vérifiez les règles Firestore pour users et withdrawals.";
+      [list,all,withdrawals].forEach(el=>el.innerHTML='<div class="empty">Données indisponibles. Consultez le message d’erreur ci-dessus.</div>');
     }
   }
   $("reloadPending").addEventListener("click", loadPendingUsers);
+  $("withdrawForm").addEventListener("submit",async e=>{
+    e.preventDefault(); if(!currentUser || isAdministrator(currentUser))return;
+    const amount=Number($("withdrawAmount").value), method=$("withdrawMethod").value, phone=$("withdrawPhone").value.trim(), beneficiaryName=$("withdrawName").value.trim();
+    if(!Number.isSafeInteger(amount)||amount<500){$("withdrawMsg").textContent="Le montant minimum demandé est de 500 FCFA.";return;}
+    if(!phone||!beneficiaryName||!method){$("withdrawMsg").textContent="Remplissez tous les champs.";return;}
+    if(!confirm("Envoyer une demande de retrait de "+money(amount)+" ? Le solde ne sera débité qu’après traitement par l’administration."))return;
+    const btn=$("withdrawSubmit");btn.disabled=true;
+    try {
+      await addDoc(collection(db,"withdrawals"),{userId:currentUser.uid,userEmail:currentUser.email||"",userName:$("accountName").value,amount,currency:"XOF",method,phone,beneficiaryName,status:"pending",createdAt:serverTimestamp()});
+      $("withdrawMsg").textContent="Demande envoyée. Elle apparaîtra dans la liste après actualisation."; $("withdrawForm").reset(); await loadMyWithdrawals(currentUser);
+    }catch(err){console.error(err);$("withdrawMsg").textContent="Demande refusée par Firebase : "+(err.code||err.message)+". Vérifiez les règles Firestore.";}
+    finally{btn.disabled=false;}
+  });
 
   document.querySelectorAll(".side-nav button").forEach(button => {
     button.addEventListener("click", () => {
@@ -691,7 +746,11 @@
 
   // Prend le code de parrain dans ?ref=... et le préremplit à l'inscription.
   const refFromUrl = new URLSearchParams(window.location.search).get("ref");
-  if (refFromUrl) $("refCode").value = refFromUrl;
+  if (refFromUrl) {
+    $("refCode").value = refFromUrl;
+    // Le lien de parrainage ouvre directement le formulaire d’inscription avec le code prérempli.
+    setTimeout(() => { if (!auth.currentUser) { openAuth("register", "free"); $("refCode").value = refFromUrl; } }, 500);
+  }
 
   // Pas de clés secrètes FedaPay ici. Le paiement nécessite un backend et un webhook vérifié.
 </script>
