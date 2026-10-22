@@ -238,7 +238,7 @@ body.dark [style*="#edf4ef"],body.dark [style*="#fbfdfb"]{background:#101c17!imp
     <div class="wrap">
       <div class="section-head">
         <div><div class="kicker">Apprendre avec un objectif</div><h2>Explorez nos domaines de formation.</h2></div>
-        <p>Les cartes ci-dessous présentent des catégories de départ. Les cours réels, prix, contenus et formateurs doivent être ajoutés dans l'administration.</p>
+        <p>Découvrez les formations publiées par notre équipe. Les titres, descriptions, niveaux et tarifs sont gérés depuis l’administration et mis à jour depuis notre base de données.</p>
       </div>
       <div class="course-grid" id="publicCourses" aria-live="polite"><div class="empty">Chargement des formations…</div></div>
     </div>
@@ -432,7 +432,7 @@ body.dark [style*="#edf4ef"],body.dark [style*="#fbfdfb"]{background:#101c17!imp
   </div>
 </div>
 <div class="modal-backdrop" id="courseModal" role="dialog" aria-modal="true" aria-labelledby="courseModalTitle">
-  <div class="modal"><button class="close" id="closeCourse" aria-label="Fermer">×</button><div class="kicker">FORMATION</div><h2 id="courseModalTitle">Formation</h2><p class="sub">Cette catégorie est une présentation provisoire. Le programme détaillé, le formateur, le prix, les dates et les conditions doivent être publiés avant toute inscription payante.</p><div class="notice">Les inscriptions aux cours et les paiements ne sont pas encore activés dans cette version.</div><button class="btn btn-primary" id="courseRegister" style="width:100%">Créer un compte pour être informé</button></div>
+  <div class="modal"><button class="close" id="closeCourse" aria-label="Fermer">×</button><div class="kicker">FORMATION</div><h2 id="courseModalTitle">Formation</h2><p class="sub">Consultez les informations de la formation dans votre espace membre. Les tarifs et contenus affichés sont ceux enregistrés par l’administration.</p><div class="notice">Pour vous inscrire, connectez-vous ou créez votre compte, puis ouvrez la rubrique « Mes formations ».</div><button class="btn btn-primary" id="courseRegister" style="width:100%">Créer un compte pour être informé</button></div>
 </div>
 
 <footer><div class="wrap footer-row"><div class="brand"><span class="brand-mark">IF</span><span>INDÉPENDANCE<small>FINANCIÈRE</small></span></div><p>© <span id="year"></span> INDÉPENDANCE FINANCIÈRE. Tous droits réservés.</p><p><a href="#cgu">Conditions d’utilisation</a> · <a href="#confidentialite">Confidentialité</a></p></div></footer>
@@ -1070,30 +1070,39 @@ const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=nu
 /* Affichage public des formations réellement enregistrées dans Firestore. */
 async function loadPublicCourses(){
  const box=$("publicCourses"); if(!box)return;
- box.innerHTML="";box.appendChild(el("div","empty","Chargement des formations…"));
+ box.replaceChildren(el("div","empty","Chargement des formations publiées…"));
  try{
+  // Lecture sans filtre : les formations créées ou modifiées dans l’administration
+  // apparaissent toutes sur le site public, même si les anciens documents n’ont
+  // pas encore de champ "published".
   const snap=await getDocs(collection(db,"courses"));
-  const courses=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(Number(a.order)||0)-(Number(b.order)||0));
-  box.innerHTML="";
-  if(!courses.length){box.appendChild(el("div","empty","Aucune formation publiée pour le moment. Revenez bientôt."));return;}
+  const courses=snap.docs.map(d=>({id:d.id,...d.data()}))
+   .filter(c=>c.active!==false && c.hidden!==true && c.status!=="draft")
+   .sort((a,b)=>(Number(a.order)||0)-(Number(b.order)||0));
+  box.replaceChildren();
+  if(!courses.length){box.appendChild(el("div","empty","Aucune formation publiée pour le moment. Ajoutez une formation dans l’administration pour l’afficher ici."));return;}
   courses.forEach(c=>{
    const card=el("article","course");
-   const art=el("div","course-art",c.level||"Formation professionnelle");
+   const art=el("div","course-art",c.category||c.level||"Formation professionnelle");
    const title=el("h3","",c.title||"Formation sans titre");
-   const desc=el("p","",c.desc||"Les détails de cette formation seront bientôt disponibles.");
+   const desc=el("p","",c.desc||c.description||"Les détails de cette formation seront bientôt disponibles.");
    const meta=el("div","course-meta");
-   meta.append(el("span","",(c.mode||c.format||"En ligne")));
+   meta.append(el("span","",c.mode||c.format||"En ligne"));
    meta.append(el("span","tag",c.level||"Tous niveaux"));
    const price=el("p","course-price",(Number(c.price)>0?Number(c.price).toLocaleString("fr-FR")+" FCFA":"Gratuit"));
    price.style.cssText="font-weight:800;color:var(--green);margin:12px 0";
-   const btn=el("button","btn btn-light btn-sm course-action","Découvrir");btn.type="button";btn.dataset.course=c.title||"Formation";btn.dataset.courseId=c.id;
+   const btn=el("button","btn btn-light btn-sm course-action","Découvrir");
+   btn.type="button";btn.dataset.course=c.title||"Formation";btn.dataset.courseId=c.id;
    card.append(art,title,desc,meta,price,btn);box.appendChild(card);
   });
  }catch(err){
   console.error("Chargement public des formations impossible",err);
-  box.innerHTML="";const msg=el("div","empty","Les formations ne peuvent pas être chargées pour le moment. Vérifiez les règles Firestore : la lecture de la collection courses doit être autorisée pour les visiteurs.");box.appendChild(msg);
+  box.replaceChildren();
+  const msg=el("div","empty","Impossible de charger les formations depuis Firebase. Vérifiez que les règles Firestore autorisent la lecture publique de la collection courses.");
+  box.appendChild(msg);
  }
 }
+
 const IMG_KEYS=["logo"],IMGS={};
 function compress(file,key){return new Promise((res,rej)=>{const r=new FileReader();r.onerror=rej;r.onload=()=>{const im=new Image();im.onerror=()=>rej(new Error("Image illisible"));im.onload=()=>{const lg=key==="logo",png=lg&&/png|webp|svg/.test(file.type);let m=lg?320:key==="gal"?1000:900,lim=key==="gal"?280000:650000,q=.82,out;
  for(let k=0;k<8;k++){const sc=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);const x=c.getContext("2d");if(!png){x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height)}x.drawImage(im,0,0,c.width,c.height);out=c.toDataURL(png?"image/png":"image/jpeg",q);if(out.length<lim)break;m*=.8;q=Math.max(.5,q-.08)}
