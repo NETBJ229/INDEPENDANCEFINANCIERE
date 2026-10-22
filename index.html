@@ -396,7 +396,7 @@
   }
   function closeAuth() { $("authModal").classList.remove("open"); }
   $("loginOpen").addEventListener("click", () => openAuth("login"));
-  ["registerOpen","heroRegister","ctaRegister","freePlan"].forEach(id => $(id).addEventListener("click", () => openAuth("register","free")));
+  ["registerOpen","heroRegister","freePlan"].forEach(id => $(id).addEventListener("click", () => openAuth("register","free")));
   $("premiumPlan").addEventListener("click", () => openAuth("register","premium"));
   $("closeModal").addEventListener("click", closeAuth);
   $("authModal").addEventListener("click", e => { if (e.target === $("authModal")) closeAuth(); });
@@ -680,7 +680,9 @@
           }});
           buttons.push({label:"Refuser",onClick:async()=>{const note=prompt("Motif du refus (obligatoire) :");if(!note||!note.trim())return;try{await updateDoc(doc(db,"withdrawals",d.id),{status:"rejected",adminNote:note.trim(),processedBy:currentUser.uid,processedAt:serverTimestamp()});msg.textContent="Demande refusée.";await loadPendingUsers();}catch(e){msg.textContent="Refus impossible : "+(e.code||e.message);}}});
         }
-        withdrawals.append(adminCard(money(x.amount)+" · "+(x.status||"pending"),"Membre : "+(x.userName||x.userId)+" · "+(x.method||"")+" · "+(x.phone||"")+" · "+(x.beneficiaryName||"")+(x.adminNote?" · Note : "+x.adminNote:"),buttons));
+        const withdrawalTitle = money(x.amount) + " - " + (x.status || "pending");
+        const withdrawalDetails = "Membre : " + (x.userName || x.userId) + " - " + (x.method || "") + " - " + (x.phone || "") + " - " + (x.beneficiaryName || "") + (x.adminNote ? " - Note : " + x.adminNote : "");
+        withdrawals.append(adminCard(withdrawalTitle, withdrawalDetails, buttons));
       });
     } catch(error) {
       console.error(error); msg.textContent="Erreur de chargement : "+(error.code||error.message||"inconnue")+". Vérifiez les règles Firestore pour users et withdrawals.";
