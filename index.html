@@ -240,11 +240,7 @@ body.dark [style*="#edf4ef"],body.dark [style*="#fbfdfb"]{background:#101c17!imp
         <div><div class="kicker">Apprendre avec un objectif</div><h2>Explorez nos domaines de formation.</h2></div>
         <p>Les cartes ci-dessous présentent des catégories de départ. Les cours réels, prix, contenus et formateurs doivent être ajoutés dans l'administration.</p>
       </div>
-      <div class="course-grid">
-        <article class="course"><div class="course-art">Marketing digital</div><h3>Développer sa présence en ligne</h3><p>Découvrir les bases du contenu, des réseaux sociaux et de la communication numérique.</p><div class="course-meta"><span>En ligne</span><span class="tag">Débutant</span></div><button class="btn btn-light btn-sm course-action" data-course="Marketing digital">Découvrir</button></article>
-        <article class="course"><div class="course-art">Compétences numériques</div><h3>Outils numériques professionnels</h3><p>Organiser son travail et se familiariser avec les outils numériques utiles à l'activité professionnelle.</p><div class="course-meta"><span>En ligne</span><span class="tag">Pratique</span></div><button class="btn btn-light btn-sm course-action" data-course="Compétences numériques">Découvrir</button></article>
-        <article class="course"><div class="course-art">Entrepreneuriat</div><h3>Structurer une activité</h3><p>Explorer les notions de base pour clarifier une offre, comprendre ses clients et planifier ses actions.</p><div class="course-meta"><span>En ligne / présentiel</span><span class="tag">Projet</span></div><button class="btn btn-light btn-sm course-action" data-course="Entrepreneuriat">Découvrir</button></article>
-      </div>
+      <div class="course-grid" id="publicCourses" aria-live="polite"><div class="empty">Chargement des formations…</div></div>
     </div>
   </section>
 
@@ -1010,11 +1006,13 @@ body.dark [style*="#edf4ef"],body.dark [style*="#fbfdfb"]{background:#101c17!imp
       $("referralMsg").textContent = "Sélectionnez le lien puis copiez-le.";
     }
   });
-  document.querySelectorAll(".course-action").forEach(button => button.addEventListener("click", () => {
+  document.addEventListener("click", e => {
+    const button = e.target.closest(".course-action");
+    if (!button) return;
     chosenCourse = button.dataset.course || "Formation";
     $("courseModalTitle").textContent = chosenCourse;
     $("courseModal").classList.add("open");
-  }));
+  });
   $("closeCourse").addEventListener("click", () => $("courseModal").classList.remove("open"));
   $("courseModal").addEventListener("click", e => { if (e.target === $("courseModal")) $("courseModal").classList.remove("open"); });
   $("courseRegister").addEventListener("click", () => {
@@ -1069,6 +1067,33 @@ const SCHEMA=[
 const DEF={};SCHEMA.forEach(f=>DEF[f[1]]=f[3]);let cfg={...DEF};
 const lines=t=>(t||"").split("\n").map(l=>l.split("|").map(x=>x.trim())).filter(r=>r[0]);
 const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+/* Affichage public des formations réellement enregistrées dans Firestore. */
+async function loadPublicCourses(){
+ const box=$("publicCourses"); if(!box)return;
+ box.innerHTML="";box.appendChild(el("div","empty","Chargement des formations…"));
+ try{
+  const snap=await getDocs(collection(db,"courses"));
+  const courses=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(Number(a.order)||0)-(Number(b.order)||0));
+  box.innerHTML="";
+  if(!courses.length){box.appendChild(el("div","empty","Aucune formation publiée pour le moment. Revenez bientôt."));return;}
+  courses.forEach(c=>{
+   const card=el("article","course");
+   const art=el("div","course-art",c.level||"Formation professionnelle");
+   const title=el("h3","",c.title||"Formation sans titre");
+   const desc=el("p","",c.desc||"Les détails de cette formation seront bientôt disponibles.");
+   const meta=el("div","course-meta");
+   meta.append(el("span","",(c.mode||c.format||"En ligne")));
+   meta.append(el("span","tag",c.level||"Tous niveaux"));
+   const price=el("p","course-price",(Number(c.price)>0?Number(c.price).toLocaleString("fr-FR")+" FCFA":"Gratuit"));
+   price.style.cssText="font-weight:800;color:var(--green);margin:12px 0";
+   const btn=el("button","btn btn-light btn-sm course-action","Découvrir");btn.type="button";btn.dataset.course=c.title||"Formation";btn.dataset.courseId=c.id;
+   card.append(art,title,desc,meta,price,btn);box.appendChild(card);
+  });
+ }catch(err){
+  console.error("Chargement public des formations impossible",err);
+  box.innerHTML="";const msg=el("div","empty","Les formations ne peuvent pas être chargées pour le moment. Vérifiez les règles Firestore : la lecture de la collection courses doit être autorisée pour les visiteurs.");box.appendChild(msg);
+ }
+}
 const IMG_KEYS=["logo"],IMGS={};
 function compress(file,key){return new Promise((res,rej)=>{const r=new FileReader();r.onerror=rej;r.onload=()=>{const im=new Image();im.onerror=()=>rej(new Error("Image illisible"));im.onload=()=>{const lg=key==="logo",png=lg&&/png|webp|svg/.test(file.type);let m=lg?320:key==="gal"?1000:900,lim=key==="gal"?280000:650000,q=.82,out;
  for(let k=0;k<8;k++){const sc=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);const x=c.getContext("2d");if(!png){x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height)}x.drawImage(im,0,0,c.width,c.height);out=c.toDataURL(png?"image/png":"image/jpeg",q);if(out.length<lim)break;m*=.8;q=Math.max(.5,q-.08)}
@@ -1140,7 +1165,7 @@ function build(){const box=$("siteFields");box.innerHTML="";let g="",wrap;SCHEMA
 $("siteForm").onsubmit=async e=>{e.preventDefault();const o={};document.querySelectorAll("#siteFields [data-k]").forEach(i=>o[i.dataset.k]=i.dataset.t==="check"?(i.checked?"1":"0"):i.value);
  if(!/^[\w.:\/%-]*$/.test("")){}try{await setDoc(doc(db,"settings","site"),o,{merge:true});cfg={...cfg,...o};apply();$("siteMsg").textContent="Enregistré. Le site public est à jour."}catch(er){$("siteMsg").textContent="Échec : "+(er.code||er.message)+". Autorisez l'écriture admin sur settings/site dans les règles Firestore."}};
 $("siteReset").onclick=()=>{cfg={...DEF};build();$("siteMsg").textContent="Valeurs par défaut chargées. Cliquez sur Enregistrer pour les appliquer."};
-onAuthStateChanged(getAuth(getApp()),u=>{const a=!!u&&(u.email||"").toLowerCase()===ADMIN;$("siteSetNav").classList.toggle("hidden",!a);if(a){build();loadCoursesAdmin();$("pilotNav").classList.remove("hidden")}else $("pilotNav").classList.add("hidden");if(u)setTimeout(()=>{tools();loadMyCourses()},3500)});
+onAuthStateChanged(getAuth(getApp()),u=>{loadPublicCourses();const a=!!u&&(u.email||"").toLowerCase()===ADMIN;$("siteSetNav").classList.toggle("hidden",!a);if(a){build();loadCoursesAdmin();$("pilotNav").classList.remove("hidden")}else $("pilotNav").classList.add("hidden");if(u)setTimeout(()=>{tools();loadMyCourses()},3500)});
 /* outils membre */
 const val=id=>$(id)?.value||$(id)?.textContent||"";
 function tools(){const L=val("referralLink");if(L){const u=encodeURIComponent(L),m=encodeURIComponent("Rejoins-moi sur INDÉPENDANCE FINANCIÈRE : ");$("shWa").href="https://wa.me/?text="+m+u;$("shFb").href="https://www.facebook.com/sharer/sharer.php?u="+u;$("shTg").href="https://t.me/share/url?url="+u+"&text="+m;$("qrImg").src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data="+u}
@@ -1185,10 +1210,10 @@ async function loadCoursesAdmin(){const L=$("cList");L.textContent="…";try{con
   const up=el("input");up.type="file";up.hidden=true;up.onchange=()=>{if(up.files[0])upFile(c,up.files[0],$("cMsg"));up.value=""};
   const ub=el("button","btn btn-light btn-sm","📎 Ajouter un fichier"),e=el("button","btn btn-light btn-sm","Modifier"),d=el("button","btn btn-outline btn-sm","Supprimer");ub.type=e.type=d.type="button";ub.onclick=()=>up.click();
   e.onclick=async()=>{EDIT=c.id;EDITC=c;$("cTitle").value=c.title;$("cLevel").value=c.level||"";$("cDesc").value=c.desc||"";$("cPrice").value=c.price||0;$("cOrder").value=c.order||0;$("cSave").textContent="Mettre à jour";try{const cc=await getDoc(doc(db,"courseContent",c.id));$("cLessons").value=(cc.exists()?cc.data().videos||[]:[]).map(v=>v.t+" | "+(v.u||"")).join("\n")}catch(er){}};
-  d.onclick=async()=>{if(!confirm("Supprimer cette formation et tous ses fichiers ?"))return;try{for(const f of c.files||[])await rmChunks(f);await deleteDoc(doc(db,"courseContent",c.id));await deleteDoc(doc(db,"courses",c.id));log("Formation supprimée",c.title);loadCoursesAdmin()}catch(er){$("cMsg").textContent="Échec : "+(er.code||er.message)}};
+  d.onclick=async()=>{if(!confirm("Supprimer cette formation et tous ses fichiers ?"))return;try{for(const f of c.files||[])await rmChunks(f);await deleteDoc(doc(db,"courseContent",c.id));await deleteDoc(doc(db,"courses",c.id));log("Formation supprimée",c.title);loadCoursesAdmin();loadPublicCourses()}catch(er){$("cMsg").textContent="Échec : "+(er.code||er.message)}};
   r.append(t,up,ub,e,d);L.appendChild(r)})}catch(er){L.textContent="Échec : "+(er.code||er.message)}}
 $("cSave").onclick=async()=>{const t=$("cTitle").value.trim();if(!t){$("cMsg").textContent="Le titre est obligatoire.";return}const o={title:t,level:$("cLevel").value.trim(),desc:$("cDesc").value.trim(),price:Math.max(0,parseInt($("cPrice").value)||0),order:+$("cOrder").value||0,updatedAt:serverTimestamp()},vids=lines($("cLessons").value).map(r=>({t:r[0],u:r[1]||""}));
- try{let id=EDIT;if(id)await updateDoc(doc(db,"courses",id),o);else{id=(await addDoc(collection(db,"courses"),{...o,files:[],createdAt:serverTimestamp()})).id}await setDoc(doc(db,"courseContent",id),{videos:vids});log(EDIT?"Formation modifiée":"Formation créée",t);const prev=EDITC&&EDITC.id===id?EDITC:{id,title:t,files:[]};EDIT=null;EDITC=null;["cTitle","cLevel","cDesc","cLessons"].forEach(i=>$(i).value="");$("cOrder").value=0;$("cPrice").value=0;$("cSave").textContent="Ajouter la formation";$("cMsg").textContent="Formation enregistrée.";const fs=[...$("cFiles").files];$("cFiles").value="";prev.title=t;for(const f of fs)await upFile(prev,f,$("cMsg"));loadCoursesAdmin()}catch(er){$("cMsg").textContent="Échec : "+(er.code||er.message)}};
+ try{let id=EDIT;if(id)await updateDoc(doc(db,"courses",id),o);else{id=(await addDoc(collection(db,"courses"),{...o,files:[],createdAt:serverTimestamp()})).id}await setDoc(doc(db,"courseContent",id),{videos:vids});log(EDIT?"Formation modifiée":"Formation créée",t);const prev=EDITC&&EDITC.id===id?EDITC:{id,title:t,files:[]};EDIT=null;EDITC=null;["cTitle","cLevel","cDesc","cLessons"].forEach(i=>$(i).value="");$("cOrder").value=0;$("cPrice").value=0;$("cSave").textContent="Ajouter la formation";$("cMsg").textContent="Formation enregistrée.";const fs=[...$("cFiles").files];$("cFiles").value="";prev.title=t;for(const f of fs)await upFile(prev,f,$("cMsg"));loadCoursesAdmin();loadPublicCourses()}catch(er){$("cMsg").textContent="Échec : "+(er.code||er.message)}};
 async function loadEnr(){const L=$("enrList");L.textContent="…";try{const sn=await getDocs(collection(db,"enrollments")),arr=sn.docs.filter(d=>d.data().status==="pending");L.innerHTML="";if(!arr.length){L.appendChild(el("p","set-hint","Aucune demande en attente."));return}
  arr.forEach(d=>{const x=d.data(),r=el("div");r.style.cssText=rowCss;const t=el("div");t.style.flex="1";t.append(el("b","",x.userName+" → "+x.courseTitle),el("div","set-hint","Montant attendu : "+(x.price|0).toLocaleString("fr-FR")+" FCFA · Réf. : "+x.ref));const ok=el("button","btn btn-primary btn-sm","Approuver"),no=el("button","btn btn-outline btn-sm","Refuser");ok.type=no.type="button";
   ok.onclick=async()=>{try{await updateDoc(d.ref,{status:"approved",approvedAt:serverTimestamp()});log("Inscription approuvée",x.userName+" — "+x.courseTitle);loadEnr()}catch(er){L.textContent="Échec : "+(er.code||er.message)}};no.onclick=async()=>{if(confirm("Refuser et supprimer cette demande ?")){await deleteDoc(d.ref);loadEnr()}};r.append(t,ok,no);L.appendChild(r)})}catch(er){L.textContent="Chargement impossible : "+(er.code||er.message)}}
