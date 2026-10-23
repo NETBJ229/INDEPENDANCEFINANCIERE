@@ -217,7 +217,7 @@ body.dark [style*="#edf4ef"],body.dark [style*="#fbfdfb"]{background:#101c17!imp
     </div>
   </section>
 
-  <section id="chiffres" data-sec="showCounters"><div class="wrap"><div class="counters" id="countersBox"></div><div class="badges"><span>🔒 Paiement sécurisé FedaPay</span><span>📱 Mobile Money</span><span>🛡️ Données protégées</span><span>✅ Inscription gratuite</span></div></div></section>
+  <section id="chiffres" data-sec="showCounters"><div class="wrap"><div class="counters" id="countersBox"></div><div class="badges"><span>🔒 Paiement sécurisé Moneroo</span><span>📱 Mobile Money</span><span>🛡️ Données protégées</span><span>✅ Inscription gratuite</span></div></div></section>
   <section id="pubs" class="hidden" style="padding:30px 0"><div class="wrap"><div class="pub-box" id="pubBox"></div></div></section>
   <section id="video" data-sec="showVideo" style="padding-top:0"><div class="wrap"><div class="section-head"><div><div class="kicker">Découvrir</div><h2>La plateforme en 60 secondes</h2></div></div><div class="video-box" id="videoBox"></div></div></section>
   <section>
@@ -252,7 +252,7 @@ body.dark [style*="#edf4ef"],body.dark [style*="#fbfdfb"]{background:#101c17!imp
       </div>
       <div class="plans">
         <article class="plan"><span class="tag">ÉTAPE 1</span><h3>Création du profil</h3><div class="plan-price">0 FCFA</div><p>Créez votre compte gratuitement en quelques minutes.</p><ul><li>Inscription gratuite</li><li>Connexion à votre espace personnel</li><li>Profil en attente d'activation</li><li>Aucun paiement prélevé à cette étape</li></ul><button class="btn btn-outline" style="width:100%" id="freePlan">Créer mon profil gratuitement</button></article>
-        <article class="plan featured"><span class="featured-badge">ÉTAPE 2</span><h3 style="margin-top:13px">Activation du compte</h3><div class="plan-price"><span id="publicMembershipFeePlan">2 000 FCFA</span> <small>/ frais d'adhésion</small></div><p>Payez les frais d'adhésion pour activer votre profil.</p><ul><li>Paiement via FedaPay après intégration</li><li>Confirmation du paiement côté serveur</li><li>Activation seulement après paiement confirmé</li><li>Accès aux fonctions réservées aux membres actifs</li></ul><button class="btn" style="width:100%;background:var(--lime);color:var(--green2)" id="premiumPlan">Créer mon profil et payer plus tard</button></article>
+        <article class="plan featured"><span class="featured-badge">ÉTAPE 2</span><h3 style="margin-top:13px">Activation du compte</h3><div class="plan-price"><span id="publicMembershipFeePlan">2 000 FCFA</span> <small>/ frais d'adhésion</small></div><p>Payez les frais d'adhésion pour activer votre profil.</p><ul><li>Paiement via Moneroo après intégration</li><li>Confirmation du paiement côté serveur</li><li>Activation seulement après paiement confirmé</li><li>Accès aux fonctions réservées aux membres actifs</li></ul><button class="btn" style="width:100%;background:var(--lime);color:var(--green2)" id="premiumPlan">Créer mon profil et payer plus tard</button></article>
       </div>
       <p class="form-note" style="text-align:center;margin-top:16px">La création du profil est gratuite, mais le compte reste en attente tant que les <span id="publicMembershipFeeBottom">2 000 FCFA</span> n'ont pas été payés et confirmés. Les frais d'adhésion sont distincts d'éventuels prix de formation.</p>
     </div>
@@ -401,6 +401,20 @@ body.dark [style*="#edf4ef"],body.dark [style*="#fbfdfb"]{background:#101c17!imp
                 <p class="form-note" id="settingsMsg" role="status"></p>
               </form>
             </div>
+            <div class="panel" style="margin-top:18px;background:#fbfdfb">
+              <h3 style="margin-top:0">🔐 Configuration du prestataire de paiement</h3>
+              <p class="form-note">Pour Moneroo, enregistrez séparément la clé secrète API et le secret de signature Webhook. Les secrets sont envoyés à Firebase côté serveur et ne sont jamais renvoyés à la page ni placés dans GitHub. Configurez le prestataire avec l’identifiant moneroo.</p>
+              <form id="paymentCredentialForm">
+                <div class="field"><label for="paymentProviderName">Nom du prestataire</label><input id="paymentProviderName" maxlength="80" required placeholder="Moneroo"></div>
+                <div class="field"><label for="paymentProviderCode">Identifiant du prestataire (pour retrouver sa configuration)</label><input id="paymentProviderCode" maxlength="40" required pattern="[A-Za-z0-9_-]+" placeholder="moneroo" autocomplete="off"></div>
+                <div class="field"><label for="paymentKeyType">Type de clé</label><select id="paymentKeyType" required><option value="publicKey">Clé publique API (facultative)</option><option value="secretKey">Clé secrète API Moneroo</option><option value="webhookSecret">Secret de signature du Webhook Moneroo</option></select></div>
+                <div class="field"><label for="paymentKeyValue">Clé à enregistrer</label><input id="paymentKeyValue" type="password" required minlength="4" autocomplete="new-password" placeholder="Collez la clé ici"></div>
+                <label style="display:flex;gap:8px;align-items:flex-start;font-size:13px"><input id="showPaymentKey" type="checkbox"><span>Afficher temporairement la clé saisie</span></label>
+                <button class="btn btn-primary" id="savePaymentCredential" type="submit">Enregistrer la clé côté serveur</button>
+                <p class="form-note" id="paymentCredentialMsg" role="status"></p>
+              </form>
+              <h4>Prestataires configurés</h4><div id="paymentCredentialList" class="form-note">Chargement…</div>
+            </div>
             <h3 style="margin-top:24px">Demandes d’activation</h3><div id="pendingUsers" style="display:grid;gap:10px;margin-top:14px"><div class="empty">Chargement…</div></div>
             <h3 style="margin-top:24px">Tous les profils membres</h3><div id="allUsers" style="display:grid;gap:10px;margin-top:14px"><div class="empty">Chargement…</div></div>
             <h3 style="margin-top:24px">Demandes de retrait</h3><div id="withdrawalRequests" style="display:grid;gap:10px;margin-top:14px"><div class="empty">Chargement…</div></div>
@@ -420,7 +434,7 @@ body.dark [style*="#edf4ef"],body.dark [style*="#fbfdfb"]{background:#101c17!imp
       <div class="field" id="nameField"><label for="fullName">Nom complet</label><input id="fullName" name="name" autocomplete="name" placeholder="Votre nom complet" required maxlength="100"></div>
       <div class="field"><label for="email">Adresse e-mail</label><input id="email" name="email" type="email" autocomplete="email" placeholder="vous@exemple.com" required></div>
       <div class="field"><label for="password">Mot de passe</label><input id="password" name="password" type="password" autocomplete="new-password" minlength="8" placeholder="8 caractères minimum" required></div>
-      <div class="field" id="refField"><label for="refCode">Code du parrain (facultatif)</label><input id="refCode" name="refCode" placeholder="Code reçu d'un membre" maxlength="100"></div>
+      <div class="field" id="refField"><label for="refCode">Code du parrain (UID du lien personnel, facultatif)</label><input id="refCode" name="refCode" placeholder="Code reçu d'un membre" maxlength="100"></div>
       <div class="field hidden" id="termsField"><label style="display:flex;gap:8px;align-items:flex-start;font-size:13px"><input type="checkbox" id="termsOk" style="margin-top:3px"> <span>J'accepte les <a href="#cgu">conditions générales</a> et la <a href="#confidentialite">politique de confidentialité</a>.</span></label></div>
       <div class="field hidden" id="planField"><label for="selectedPlan">Étape du compte</label><select id="selectedPlan"><option value="free">Créer un profil gratuit</option><option value="premium">Créer un profil et voir les frais d'adhésion</option></select></div>
       <div class="form-error" id="authError" role="alert"></div>
@@ -448,6 +462,7 @@ body.dark [style*="#edf4ef"],body.dark [style*="#fbfdfb"]{background:#101c17!imp
     collection, getDocs, query, where, updateDoc, addDoc, deleteDoc, writeBatch
   } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
   import { getAnalytics, isSupported } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-analytics.js";
+  import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-functions.js";
 
   // Configuration de l'application Web Firebase fournie par l'utilisateur.
   // L'API key est une valeur de configuration publique; elle doit correspondre au projet Firebase.
@@ -463,11 +478,17 @@ body.dark [style*="#edf4ef"],body.dark [style*="#fbfdfb"]{background:#101c17!imp
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+  const functions = getFunctions(app);
+  const savePaymentCredentialCall = httpsCallable(functions, "savePaymentCredential");
+  const listPaymentCredentialsCall = httpsCallable(functions, "listPaymentCredentials");
+  const startMembershipPaymentCall = httpsCallable(functions, "startMembershipPayment");
   isSupported().then(ok => { if (ok) getAnalytics(app); }).catch(() => {});
 
   const $ = (id) => document.getElementById(id);
   const ADMIN_EMAIL = "infojusticededieu@gmail.com";
   function isAdministrator(user) {
+    // Cette vérification pilote uniquement l’interface. La sécurité réelle doit
+    // aussi être imposée par Firestore Rules / un backend de confiance.
     return !!user && (user.email || "").trim().toLowerCase() === ADMIN_EMAIL;
   }
   let authMode = "register";
@@ -560,6 +581,10 @@ body.dark [style*="#edf4ef"],body.dark [style*="#fbfdfb"]{background:#101c17!imp
     const fullName = $("fullName").value.trim();
     const requestedPlan = $("selectedPlan").value;
     const referralCode = $("refCode").value.trim();
+    if (authMode === "register" && referralCode && !/^[A-Za-z0-9_-]{20,128}$/.test(referralCode)) {
+      $("authError").textContent = "Le code de parrainage n’est pas valide. Utilisez le lien personnel reçu de votre parrain.";
+      $("submitAuth").disabled = false; $("submitAuth").textContent = "Créer mon compte"; return;
+    }
     try {
       if (authMode === "register" && !$("termsOk").checked) { $("authError").textContent = "Vous devez accepter les conditions générales pour créer un compte."; $("submitAuth").textContent = "Créer mon compte"; $("submitAuth").disabled = false; return; }
       if (authMode === "register") {
@@ -580,7 +605,7 @@ body.dark [style*="#edf4ef"],body.dark [style*="#fbfdfb"]{background:#101c17!imp
           membershipPaymentStatus: "unpaid",
           walletBalance: 0,
           referralCode: credential.user.uid,
-          referredByCode: referralCode || null,
+          referredByCode: (referralCode && referralCode !== credential.user.uid) ? referralCode : null,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
           termsAcceptedAt: serverTimestamp()
@@ -591,7 +616,7 @@ body.dark [style*="#edf4ef"],body.dark [style*="#fbfdfb"]{background:#101c17!imp
             uid: credential.user.uid,
             displayName: fullName || credential.user.email || "Membre",
             status: "pending_payment",
-            referredByCode: referralCode || null,
+            referredByCode: (referralCode && referralCode !== credential.user.uid) ? referralCode : null,
             createdAt: serverTimestamp()
           });
         } catch (profileError) {
@@ -602,7 +627,7 @@ body.dark [style*="#edf4ef"],body.dark [style*="#fbfdfb"]{background:#101c17!imp
           return;
         }
         closeAuth();
-        alert("Votre profil a été créé gratuitement. Pour l'activer, vous devrez payer les frais d'adhésion de 2 000 FCFA. Le paiement sera activé lorsque FedaPay et la vérification côté serveur seront configurés.");
+        alert("Votre profil a été créé gratuitement. Pour l'activer, vous devrez payer les frais d'adhésion de 2 000 FCFA. Le paiement sera activé après confirmation sécurisée du paiement Moneroo par le serveur.");
       } else {
         await signInWithEmailAndPassword(auth, email, password);
         closeAuth();
@@ -617,7 +642,21 @@ body.dark [style*="#edf4ef"],body.dark [style*="#fbfdfb"]{background:#101c17!imp
   });
 
   $("payMembershipBtn").addEventListener("click", () => {
-    alert("Le paiement de 2 000 FCFA n'est pas encore connecté. Pour éviter toute fraude, le compte ne sera activé qu'après l'intégration FedaPay et la confirmation du paiement par le serveur.");
+    (async () => {
+      const button = $("payMembershipBtn");
+      if (!currentUser) { alert("Connectez-vous d’abord pour payer l’activation."); return; }
+      if (isAdministrator(currentUser)) { alert("Le compte administrateur n’a pas besoin de payer l’activation."); return; }
+      button.disabled = true; const original = button.textContent; button.textContent = "Préparation du paiement…";
+      try {
+        const result = await startMembershipPaymentCall({ returnUrl: window.location.href.split("#")[0] });
+        if (!result.data?.checkoutUrl) throw new Error("Moneroo n’a pas renvoyé de lien de paiement.");
+        window.location.href = result.data.checkoutUrl;
+      } catch (error) {
+        console.error(error);
+        alert("Impossible de lancer le paiement Moneroo : " + (error.message || error.code || "erreur inconnue") + ". Vérifiez que l’administrateur a configuré la clé secrète Moneroo et le déploiement Firebase.");
+        button.disabled = false; button.textContent = original;
+      }
+    })();
   });
 
   $("logoutBtn").addEventListener("click", async () => {
@@ -646,7 +685,7 @@ body.dark [style*="#edf4ef"],body.dark [style*="#fbfdfb"]{background:#101c17!imp
     $("payMembershipBtn").classList.toggle("hidden", active);
     $("paymentInfo").textContent = admin
       ? "Compte administrateur validé automatiquement. Aucune adhésion payante n'est requise."
-      : (active ? "Votre adhésion est active." : "Le paiement FedaPay n'est pas encore connecté dans cette version. Le bouton ne prélève pas d'argent.");
+      : (active ? "Votre adhésion est active." : "Le paiement Moneroo n'est pas encore connecté dans cette version. Le bouton ne prélève pas d'argent.");
     $("accountName").value = name;
     $("accountEmail").value = user.email || "";
     $("accountUid").value = user.uid;
@@ -657,6 +696,7 @@ body.dark [style*="#edf4ef"],body.dark [style*="#fbfdfb"]{background:#101c17!imp
     loadPlatformSettings();
     if (!admin) loadMyWithdrawals(user).catch(err => { console.warn(err); $("myWithdrawals").textContent = "Impossible de charger les demandes pour le moment."; });
     if (admin) {
+      loadPaymentCredentials().catch(console.error);
       $("directReferralCount").textContent = "—";
       $("referralMsg").textContent = "Compte administrateur.";
     } else {
@@ -745,36 +785,46 @@ body.dark [style*="#edf4ef"],body.dark [style*="#fbfdfb"]{background:#101c17!imp
     if (!user || !box) return;
     box.textContent = "Chargement du réseau…";
     try {
-      // Collection dédiée aux données minimales du réseau, sans e-mails ni données financières.
-      const snap = await getDocs(collection(db, "referralNetwork"));
-      const people = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      const byReferrer = new Map();
-      people.forEach(person => {
-        if (!person.referredByCode) return;
-        const key = String(person.referredByCode);
-        if (!byReferrer.has(key)) byReferrer.set(key, []);
-        byReferrer.get(key).push(person);
-      });
-      const level1 = byReferrer.get(user.uid) || [];
-      const level2 = level1.flatMap(person => byReferrer.get(person.uid || person.id) || []);
-      const level3 = level2.flatMap(person => byReferrer.get(person.uid || person.id) || []);
-      [["networkCount1",level1.length],["networkCount2",level2.length],["networkCount3",level3.length]].forEach(([id,count]) => { $(id).textContent = String(count); });
+      // Recherche niveau par niveau, plutôt que de télécharger tout le réseau.
+      // Chaque inscription doit enregistrer le UID du parrain dans referredByCode.
+      const fetchChildren = async parentUid => {
+        const q = query(collection(db, "referralNetwork"), where("referredByCode", "==", parentUid));
+        const snap = await getDocs(q);
+        return snap.docs.map(d => ({ id: d.id, ...d.data(), uid: d.data().uid || d.id }));
+      };
+      const level1 = await fetchChildren(user.uid);
+      const level2Groups = await Promise.all(level1.map(person => fetchChildren(person.uid)));
+      const level2 = level2Groups.flat();
+      const level3Groups = await Promise.all(level2.map(person => fetchChildren(person.uid)));
+      const level3 = level3Groups.flat();
+      [["networkCount1",level1.length],["networkCount2",level2.length],["networkCount3",level3.length]].forEach(([id,count]) => { if ($(id)) $(id).textContent = String(count); });
       box.replaceChildren();
       const levels = [{n:1,people:level1},{n:2,people:level2},{n:3,people:level3}];
       levels.forEach(level => {
-        const section = document.createElement("div"); section.style.cssText = "margin:12px 0;padding:12px;border:1px solid var(--line);border-radius:12px;background:white";
-        const heading = document.createElement("strong"); heading.textContent = `Niveau ${level.n} — ${level.people.length} membre(s)`; section.appendChild(heading);
-        if (!level.people.length) { const p = document.createElement("p"); p.className="form-note"; p.textContent="Aucun membre à ce niveau pour le moment."; section.appendChild(p); }
-        else {
-          const ul = document.createElement("ul"); ul.style.cssText="margin:8px 0 0;padding-left:20px";
-          level.people.forEach(person => { const li=document.createElement("li"); const st=person.status==="active"?"Actif":person.status==="suspended"?"Suspendu":"En attente"; li.textContent=`${person.displayName || "Membre"} — ${st}`; ul.appendChild(li); });
+        const section = document.createElement("div");
+        section.style.cssText = "margin:12px 0;padding:12px;border:1px solid var(--line);border-radius:12px;background:white";
+        const heading = document.createElement("strong");
+        heading.textContent = `Niveau ${level.n} — ${level.people.length} membre(s)`;
+        section.appendChild(heading);
+        if (!level.people.length) {
+          const p = document.createElement("p"); p.className = "form-note"; p.textContent = "Aucun membre à ce niveau pour le moment."; section.appendChild(p);
+        } else {
+          const ul = document.createElement("ul"); ul.style.cssText = "margin:8px 0 0;padding-left:20px";
+          level.people.forEach(person => {
+            const li = document.createElement("li");
+            const st = person.status === "active" ? "Actif" : person.status === "suspended" ? "Suspendu" : "En attente";
+            li.textContent = `${person.displayName || "Membre"} — ${st}`;
+            ul.appendChild(li);
+          });
           section.appendChild(ul);
         }
         box.appendChild(section);
       });
+      $("referralMsg").textContent = "Réseau actualisé sur 3 niveaux.";
     } catch (error) {
       console.error("Impossible de charger le réseau d’affiliation", error);
-      box.textContent = "Impossible de charger le réseau. Vérifiez les règles Firestore pour la collection referralNetwork.";
+      box.textContent = "Impossible de charger le réseau. Les règles Firestore doivent autoriser la lecture des seuls membres rattachés à votre réseau (referredByCode).";
+      if ($("referralMsg")) $("referralMsg").textContent = error && error.code ? "Erreur Firebase : " + error.code : "Erreur de lecture du réseau.";
       throw error;
     }
   }
@@ -971,6 +1021,40 @@ body.dark [style*="#edf4ef"],body.dark [style*="#fbfdfb"]{background:#101c17!imp
       console.error(error); msg.textContent = "Enregistrement impossible : " + (error.code || error.message) + ". Vérifiez les règles Firestore pour settings/platform.";
     } finally { button.disabled = false; }
   });
+  async function loadPaymentCredentials() {
+    const target = $("paymentCredentialList");
+    if (!target) return;
+    if (!isAdministrator(currentUser)) { target.textContent = "Accès réservé à l’administrateur."; return; }
+    try {
+      const result = await listPaymentCredentialsCall({});
+      const items = result.data?.items || [];
+      target.replaceChildren();
+      if (!items.length) { target.textContent = "Aucun prestataire configuré."; return; }
+      for (const item of items) {
+        const row = document.createElement("div"); row.className = "notice"; row.style.marginTop = "8px";
+        const status = `Clé publique : ${item.hasPublicKey ? "enregistrée" : "absente"} · Clé secrète API : ${item.hasSecretKey ? "enregistrée (masquée)" : "absente"} · Secret Webhook : ${item.hasWebhookSecret ? "enregistré (masqué)" : "absent"}`;
+        row.textContent = `${item.providerName} (${item.providerCode}) — ${status}`; target.append(row);
+      }
+    } catch (error) { target.textContent = "Chargement impossible : " + (error.code || error.message); }
+  }
+  $("showPaymentKey").addEventListener("change", () => { $("paymentKeyValue").type = $("showPaymentKey").checked ? "text" : "password"; });
+  $("paymentCredentialForm").addEventListener("submit", async (event) => {
+    event.preventDefault(); const msg = $("paymentCredentialMsg"); const button = $("savePaymentCredential");
+    if (!isAdministrator(currentUser)) { msg.textContent = "Action réservée à l’administrateur."; return; }
+    const providerName = $("paymentProviderName").value.trim();
+    const providerCode = $("paymentProviderCode").value.trim().toLowerCase();
+    const keyType = $("paymentKeyType").value; const keyValue = $("paymentKeyValue").value.trim();
+    if (!/^[a-z0-9_-]{2,40}$/.test(providerCode) || !keyValue) { msg.textContent = "Vérifiez l’identifiant du prestataire et la clé."; return; }
+    button.disabled = true; msg.textContent = "Enregistrement sécurisé en cours…";
+    try {
+      await savePaymentCredentialCall({ providerName, providerCode, keyType, keyValue });
+      $("paymentKeyValue").value = ""; $("showPaymentKey").checked = false; $("paymentKeyValue").type = "password";
+      msg.textContent = "Clé enregistrée côté serveur. Elle n’est pas affichée de nouveau.";
+      await loadPaymentCredentials();
+    } catch (error) { console.error(error); msg.textContent = "Échec : " + (error.code || error.message || "erreur inconnue"); }
+    finally { button.disabled = false; }
+  });
+
   $("reloadPending").addEventListener("click", async () => { await loadPlatformSettings(); await loadPendingUsers(); });
   $("withdrawForm").addEventListener("submit",async e=>{
     e.preventDefault(); if(!currentUser || isAdministrator(currentUser))return;
@@ -1041,7 +1125,7 @@ body.dark [style*="#edf4ef"],body.dark [style*="#fbfdfb"]{background:#101c17!imp
   // Charge les prix configurés par l’administrateur aussi sur la page publique.
   loadPlatformSettings();
 
-  // Pas de clés secrètes FedaPay ici. Le paiement nécessite un backend et un webhook vérifié.
+  // Pas de clés secrètes Moneroo ici. Le paiement nécessite un backend et un webhook vérifié.
 </script>
 
 <div id="printArea" style="display:none"></div>
@@ -1174,7 +1258,7 @@ function build(){const box=$("siteFields");box.innerHTML="";let g="",wrap;SCHEMA
 $("siteForm").onsubmit=async e=>{e.preventDefault();const o={};document.querySelectorAll("#siteFields [data-k]").forEach(i=>o[i.dataset.k]=i.dataset.t==="check"?(i.checked?"1":"0"):i.value);
  if(!/^[\w.:\/%-]*$/.test("")){}try{await setDoc(doc(db,"settings","site"),o,{merge:true});cfg={...cfg,...o};apply();$("siteMsg").textContent="Enregistré. Le site public est à jour."}catch(er){$("siteMsg").textContent="Échec : "+(er.code||er.message)+". Autorisez l'écriture admin sur settings/site dans les règles Firestore."}};
 $("siteReset").onclick=()=>{cfg={...DEF};build();$("siteMsg").textContent="Valeurs par défaut chargées. Cliquez sur Enregistrer pour les appliquer."};
-onAuthStateChanged(getAuth(getApp()),u=>{loadPublicCourses();const a=!!u&&(u.email||"").toLowerCase()===ADMIN;$("siteSetNav").classList.toggle("hidden",!a);if(a){build();loadCoursesAdmin();$("pilotNav").classList.remove("hidden")}else $("pilotNav").classList.add("hidden");if(u)setTimeout(()=>{tools();loadMyCourses()},3500)});
+onAuthStateChanged(getAuth(getApp()),u=>{loadPublicCourses();const a=isAdministrator(u);$("siteSetNav").classList.toggle("hidden",!a);if(a){build();loadCoursesAdmin();$("pilotNav").classList.remove("hidden")}else $("pilotNav").classList.add("hidden");if(u)setTimeout(()=>{tools();loadMyCourses()},3500)});
 /* outils membre */
 const val=id=>$(id)?.value||$(id)?.textContent||"";
 function tools(){const L=val("referralLink");if(L){const u=encodeURIComponent(L),m=encodeURIComponent("Rejoins-moi sur INDÉPENDANCE FINANCIÈRE : ");$("shWa").href="https://wa.me/?text="+m+u;$("shFb").href="https://www.facebook.com/sharer/sharer.php?u="+u;$("shTg").href="https://t.me/share/url?url="+u+"&text="+m;$("qrImg").src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data="+u}
@@ -1198,16 +1282,14 @@ $("pwBtn").onclick=async()=>{const m=$("pwMsg"),u=auth.currentUser,o=$("pwOld").
  m.textContent="Modification…";try{await reauthenticateWithCredential(u,EmailAuthProvider.credential(u.email,o));await updatePassword(u,n);["pwOld","pwNew","pwNew2"].forEach(i=>$(i).value="");m.textContent="Mot de passe modifié avec succès."}catch(er){m.textContent=/wrong|invalid-credential/.test(er.code||"")?"Mot de passe actuel incorrect.":"Échec : "+(er.code||er.message)}};
 async function log(a,d){try{await addDoc(collection(db,"auditLog"),{by:auth.currentUser.email,action:a,detail:String(d||"").slice(0,200),createdAt:serverTimestamp()})}catch(e){}}
 document.addEventListener("click",e=>{const b=e.target.closest("#tab-admin button");if(!b||b.id==="reloadPending"||!auth.currentUser)return;log("Action demandée : "+b.textContent.trim(),(b.closest(".notice,.panel")?.textContent||"").trim().slice(0,90))},true);
-/* commissions automatiques (anti-doublon : identifiants de transactions fixes + indicateur commissionsPaid) */
-async function payCommissions(id){const us=await getDoc(doc(db,"users",id));if(!us.exists())return;const u=us.data();if(u.commissionsPaid)return;
- const ps=(await getDoc(doc(db,"settings","platform"))).data()||{},A=[+ps.commissionLevel1||1000,+ps.commissionLevel2||500,+ps.commissionLevel3||250];let cur=u.referredByCode,n=0;const b=writeBatch(db);
- for(let L=0;L<3&&cur&&cur!==id;L++){const pu=await getDoc(doc(db,"users",cur));if(!pu.exists())break;const p=pu.data();
-  if(p.status==="active"&&A[L]>0){b.update(doc(db,"users",cur),{walletBalance:increment(A[L]),updatedAt:serverTimestamp()});b.set(doc(db,"walletTransactions","comm_"+id+"_L"+(L+1)),{userId:cur,type:"credit",amount:A[L],currency:"XOF",reason:"Commission niveau "+(L+1)+" — adhésion de "+(u.displayName||id),createdBy:auth.currentUser.uid,createdAt:serverTimestamp(),source:"commission_auto"});n++}
-  cur=p.referredByCode}
- b.update(doc(db,"users",id),{commissionsPaid:true});await b.commit();log("Commissions versées",n+" parrain(s) pour "+(u.displayName||id))}
-window.__afterActivate=payCommissions;
+/* Les commissions ne sont JAMAIS créditées depuis le navigateur.
+   Le déclencheur Firebase Cloud Function (functions/index.js) vérifie l'activation,
+   remonte les trois parrains et écrit les transactions de façon idempotente. */
+window.__afterActivate=async function(){
+  console.info("Le calcul des commissions est effectué par la Cloud Function sécurisée, pas par le navigateur.");
+};
 /* formations : fichiers (texte en base64 découpé), paiement par formation */
-const isAdm=()=>(auth.currentUser?.email||"").toLowerCase()===ADMIN,MAXF=15e6,CH=5e5,rowCss="display:flex;gap:10px;align-items:center;flex-wrap:wrap;border:1px solid var(--line);border-radius:12px;padding:8px 10px;margin-bottom:8px";let EDIT=null,EDITC=null;
+const isAdm=()=>isAdministrator(auth.currentUser),MAXF=15e6,CH=5e5,rowCss="display:flex;gap:10px;align-items:center;flex-wrap:wrap;border:1px solid var(--line);border-radius:12px;padding:8px 10px;margin-bottom:8px";let EDIT=null,EDITC=null;
 const b64=bl=>new Promise((r,j)=>{const f=new FileReader();f.onload=()=>r(f.result.split(",")[1]);f.onerror=j;f.readAsDataURL(bl)});
 async function upFile(c,file,m){if(file.size>MAXF){m.textContent="Fichier trop lourd (15 Mo maximum).";return}const id=Date.now().toString(36),n=Math.max(1,Math.ceil(file.size/CH));
  try{for(let i=0;i<n;i++){m.textContent="Envoi "+(i+1)+"/"+n+"…";await setDoc(doc(db,"fileChunks",id+"_"+i),{courseId:c.id,fileId:id,i,data:await b64(file.slice(i*CH,(i+1)*CH))})}
@@ -1239,7 +1321,7 @@ function courseCard(c){const d=el("div","panel");d.style.marginBottom="14px";con
    b.onclick=async()=>{if(!ref.value.trim()){m.textContent="Indiquez la référence du paiement.";return}try{await setDoc(doc(db,"enrollments",auth.currentUser.uid+"_"+c.id),{uid:auth.currentUser.uid,courseId:c.id,courseTitle:c.title,price,userName:esc($("memberName").textContent),ref:ref.value.trim(),status:"pending",createdAt:serverTimestamp()});loadMyCourses()}catch(er){m.textContent="Échec : "+(er.code||er.message)}};d.append(el("p","form-note",cfg.payInstructions||""),ref,b,m)}return d}
  const list=el("div"),bar=el("div","progress"),sp=el("span"),pt=el("p","form-note"),cert=el("button","btn btn-light btn-sm","🎓 Télécharger mon certificat");bar.style.background="#dbe8df";sp.style.background="var(--green)";bar.appendChild(sp);cert.hidden=true;cert.type="button";let V=[];
  const keys=()=>[...(c.files||[]).map(f=>"f"+f.id),...V.map((_,i)=>"v"+i)].map(k=>c.id+"_"+k),upd=()=>{const K=keys(),n=K.filter(k=>PROG[k]).length,p=K.length?Math.round(n/K.length*100):0;sp.style.width=p+"%";pt.textContent=n+"/"+K.length+" éléments terminés ("+p+" %)";cert.hidden=!(K.length&&p===100)};
- const row=(key,label)=>{const r=el("div");r.style.cssText="margin:8px 0;padding:8px 0;border-top:1px solid var(--line)";const top=el("div");top.style.cssText="display:flex;gap:8px;align-items:center;flex-wrap:wrap";const cb=el("input");cb.type="checkbox";cb.checked=!!PROG[c.id+"_"+key];cb.onchange=async()=>{PROG[c.id+"_"+key]=cb.checked;upd();try{await setDoc(doc(db,"progress",auth.currentUser.uid),{done:{[c.id+"_"+key]:cb.checked}},{merge:true})}catch(e){}};const lb=el("b","",label);lb.style.flex="1";top.append(cb,lb);r.appendChild(top);list.appendChild(r);return [r,top]};
+ const row=(key,label)=>{const r=el("div");r.style.cssText="margin:8px 0;padding:8px 0;border-top:1px solid var(--line)";const top=el("div");top.style.cssText="display:flex;gap:8px;align-items:center;flex-wrap:wrap";const cb=el("input");cb.type="checkbox";cb.checked=!!PROG[c.id+"_"+key];cb.onchange=async()=>{const progressKey=c.id+"_"+key,uid=auth.currentUser?.uid;if(!uid){cb.checked=!cb.checked;return}const previous=!!PROG[progressKey];PROG[progressKey]=cb.checked;upd();cb.disabled=true;try{const progressRef=doc(db,"progress",uid),progressSnap=await getDoc(progressRef);if(progressSnap.exists()){await updateDoc(progressRef,{["done."+progressKey]:cb.checked,updatedAt:serverTimestamp()})}else{await setDoc(progressRef,{done:{[progressKey]:cb.checked},updatedAt:serverTimestamp()})}}catch(e){PROG[progressKey]=previous;cb.checked=previous;upd();pt.textContent="Impossible d’enregistrer la progression : "+(e.code||e.message||"erreur inconnue")}finally{cb.disabled=false}};const lb=el("b","",label);lb.style.flex="1";top.append(cb,lb);r.appendChild(top);list.appendChild(r);return [r,top]};
  (c.files||[]).forEach(f=>{const [r,top]=row("f"+f.id,"📄 "+f.name+" ("+Math.round(f.size/1024)+" Ko)"),dl=el("button","btn btn-light btn-sm","⬇ Télécharger");dl.type="button";top.appendChild(dl);
   dl.onclick=async()=>{dl.disabled=true;dl.textContent="Téléchargement…";try{const bl=await getBlob(f),url=URL.createObjectURL(bl);if(/^video\//.test(f.type)){const v=el("video");v.src=url;v.controls=true;v.style.cssText="width:100%;margin-top:8px;border-radius:12px";r.appendChild(v)}const a=el("a");a.href=url;a.download=esc(f.name);document.body.appendChild(a);a.click();a.remove();dl.textContent="✔ Téléchargé"}catch(er){dl.textContent="Échec — réessayer";dl.disabled=false}}});
  getDoc(doc(db,"courseContent",c.id)).then(sn=>{V=sn.exists()?sn.data().videos||[]:[];V.forEach((v,i)=>{const [r,top]=row("v"+i,"🎬 "+v.t),y=(v.u||"").match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/),pl=el("button","btn btn-light btn-sm","▶ Regarder");pl.type="button";top.appendChild(pl);
